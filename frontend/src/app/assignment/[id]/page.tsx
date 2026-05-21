@@ -85,7 +85,8 @@ export default function AssignmentOutput() {
 
   const handleDownloadPDF = () => {
     if (!id) return;
-    window.open(`http://localhost:5000/api/assignments/${id}/pdf`, '_blank');
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    window.open(`${apiBase}/assignments/${id}/pdf`, '_blank');
   };
 
   const handleRegenerate = async () => {
