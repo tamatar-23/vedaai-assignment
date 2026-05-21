@@ -249,12 +249,12 @@ export default function Header() {
             </div>
             <div style={{ fontSize: '14px', lineHeight: 1.6, color: 'var(--text-main)' }}>
               <p style={{ marginBottom: '16px' }}>
-                VedaAI is an automated **AI Assessment Creator** helping teachers generate question papers in seconds.
+                VedaAI is an automated <strong>AI Assessment Creator</strong> helping teachers generate question papers in seconds.
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <div style={{ color: 'var(--primary)', fontWeight: 'bold' }}>1.</div>
-                  <div>Click the **AI Teacher's Toolkit** button in the sidebar or banner to open the Creator Form.</div>
+                  <div>Click the <strong>AI Teacher's Toolkit</strong> button in the sidebar or banner to open the Creator Form.</div>
                 </div>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <div style={{ color: 'var(--primary)', fontWeight: 'bold' }}>2.</div>
@@ -262,7 +262,7 @@ export default function Header() {
                 </div>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <div style={{ color: 'var(--primary)', fontWeight: 'bold' }}>3.</div>
-                  <div>Click **Generate Assessment**. Watch live WebSocket logs streaming. On completion, download the formatted PDF or view the Toggleable Answer Keys!</div>
+                  <div>Click <strong>Generate Assessment</strong>. Watch live WebSocket logs streaming. On completion, download the formatted PDF or view the Toggleable Answer Keys!</div>
                 </div>
               </div>
               <button 

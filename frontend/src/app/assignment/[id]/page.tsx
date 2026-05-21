@@ -34,6 +34,18 @@ export default function AssignmentOutput() {
   const [showAnswerKey, setShowAnswerKey] = useState(false);
   const logEndRef = useRef<HTMLDivElement | null>(null);
 
+  // Helper to extract and display only the actual additional instructions/focus notes
+  const getDisplayInstructions = (instructions?: string): string => {
+    if (!instructions) return '';
+    const detailsMarker = '[Additional Details]:';
+    const index = instructions.indexOf(detailsMarker);
+    if (index !== -1) {
+      const details = instructions.substring(index + detailsMarker.length).trim();
+      return details === 'None' ? '' : details;
+    }
+    return instructions;
+  };
+
   // Load details on mount
   useEffect(() => {
     if (id) {
@@ -249,8 +261,8 @@ export default function AssignmentOutput() {
             <li>All questions are compulsory.</li>
             <li>This question paper contains {sections.length} sections.</li>
             <li>Marks are indicated against each question.</li>
-            {activeAssignment.additionalInstructions && (
-              <li>Focus notes: {activeAssignment.additionalInstructions}</li>
+            {getDisplayInstructions(activeAssignment.additionalInstructions) && (
+              <li>Focus notes: {getDisplayInstructions(activeAssignment.additionalInstructions)}</li>
             )}
           </ol>
         </div>

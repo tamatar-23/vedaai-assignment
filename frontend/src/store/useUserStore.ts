@@ -18,7 +18,7 @@ interface UserState {
   updateProfile: (data: Partial<IUserProfile>) => Promise<boolean>;
 }
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export const useUserStore = create<UserState>((set) => ({
   user: null,

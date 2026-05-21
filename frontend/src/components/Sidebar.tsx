@@ -15,6 +15,8 @@ import {
   Shield
 } from 'lucide-react';
 import { useUserStore } from '@/store/useUserStore';
+import { useAssignmentStore } from '@/store/useAssignmentStore';
+
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -23,7 +25,9 @@ export default function Sidebar() {
 
   // User Profile Store
   const { user, fetchProfile, updateProfile } = useUserStore();
+  const { assignments, fetchAssignments } = useAssignmentStore();
   const [showSchoolModal, setShowSchoolModal] = useState(false);
+
   const [editSchoolName, setEditSchoolName] = useState('');
   const [editSchoolBranch, setEditSchoolBranch] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -35,7 +39,9 @@ export default function Sidebar() {
         setEditSchoolBranch(profile.schoolBranch);
       }
     });
-  }, [fetchProfile]);
+    fetchAssignments();
+  }, [fetchProfile, fetchAssignments]);
+
 
   useEffect(() => {
     if (user) {
@@ -130,8 +136,11 @@ export default function Sidebar() {
                     <item.icon size={18} className="nav-icon" />
                     <span className="sidebar-text">{item.name}</span>
                     {item.name === 'Assignments' && (
-                      <span className="badge-count" style={{ backgroundColor: 'var(--primary)', color: '#ffffff' }}>22</span>
+                      <span className="badge-count" style={{ backgroundColor: 'var(--primary)', color: '#ffffff' }}>
+                        {assignments.length}
+                      </span>
                     )}
+
                   </Link>
                 </li>
               );

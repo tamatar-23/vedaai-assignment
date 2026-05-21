@@ -3,22 +3,15 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
-  Calendar, 
-  Clock, 
-  FileText, 
-  MoreVertical, 
   Plus, 
-  Trash2, 
-  Eye, 
   TrendingUp, 
   CheckCircle,
-  AlertCircle,
-  HelpCircle,
-  Users,
+  FileText,
   Award
 } from 'lucide-react';
-import { useAssignmentStore, IAssignment } from '@/store/useAssignmentStore';
+import { useAssignmentStore } from '@/store/useAssignmentStore';
 import { useUserStore } from '@/store/useUserStore';
+import AssignmentCard from '@/components/AssignmentCard';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -32,7 +25,7 @@ export default function Dashboard() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Analytics Modals States
-  const [showGaugeModal, setShowGaugeModal] = useState(false);
+  const [showTotalModal, setShowTotalModal] = useState(false);
   const [showTimeModal, setShowTimeModal] = useState(false);
   const [showGradedModal, setShowGradedModal] = useState(false);
 
@@ -77,45 +70,11 @@ export default function Dashboard() {
     return () => window.removeEventListener('click', closeAll);
   }, []);
 
-  // Filter out pending, processing or failed assignments from the main dashboard grid
+  // Filter completed assignments
   const completedAssignments = assignments.filter((a) => a.status === 'completed');
 
-  // Logic to display at most 2 completed assignments under Recent Assignments
-  const referenceIds = ['motion-101', 'electricity-102'];
-  const displayedAssignments = completedAssignments.filter(a => referenceIds.includes(a.id || a._id)).length >= 2
-    ? completedAssignments.filter(a => referenceIds.includes(a.id || a._id)).slice(0, 2)
-    : completedAssignments.slice(0, 2);
-
-  // Submission metrics map for cards to match design specifications
-  const getCardSubmissionDetails = (assignment: IAssignment) => {
-    const id = assignment.id || assignment._id;
-    if (id === 'motion-101') {
-      return {
-        submitted: 50,
-        total: 50,
-        percent: 100,
-        status: 'Closed',
-        statusClass: 'closed'
-      };
-    }
-    if (id === 'electricity-102') {
-      return {
-        submitted: 42,
-        total: 50,
-        percent: 84,
-        status: 'Active',
-        statusClass: 'active'
-      };
-    }
-    // Dynamic generated assignments fallback
-    return {
-      submitted: 18,
-      total: 20,
-      percent: 90,
-      status: 'Active',
-      statusClass: 'active'
-    };
-  };
+  // Display at most 2 completed assignments under Recent Assignments
+  const displayedAssignments = completedAssignments.slice(0, 2);
 
   // User Profile details
   const displayName = user ? user.name : 'Teacher';
@@ -124,10 +83,17 @@ export default function Dashboard() {
     ? user.name.split(' ').filter(Boolean).map((n) => n[0]).join('').toUpperCase().slice(0, 2) 
     : 'T';
 
+  // Group assignments by class for modal analytics
+  const classBreakdown = assignments.reduce((acc, curr) => {
+    const cls = curr.classLevel || 'Unassigned';
+    acc[cls] = (acc[cls] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
   return (
     <div className="dashboard-wrapper" style={{ position: 'relative' }}>
       
-      {/* Welcome greeting with green status dot */}
+      {/* Welcome greeting with status dot */}
       <div className="welcome-section">
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <span className="green-dot" style={{ width: '10px', height: '10px' }} title="Online Status"></span>
@@ -139,22 +105,21 @@ export default function Dashboard() {
       {/* Premium Stats Row */}
       <div className="dashboard-stats-row">
         
-        {/* Dark Gauge Card */}
-        <div className="stat-card dark" style={{ cursor: 'pointer' }} onClick={() => setShowGaugeModal(true)} title="View submission details">
+        {/* Total Assignments Card (Real data from Zustand) */}
+        <div 
+          className="stat-card dark" 
+          style={{ cursor: 'pointer' }} 
+          onClick={() => setShowTotalModal(true)} 
+          title="View assignments breakdown"
+        >
           <div>
-            <div className="stat-card-title">Submission Rate</div>
-            <div className="stat-card-value">67 of 80</div>
-            <div className="stat-card-subtext">Students submitted</div>
+            <div className="stat-card-title">Total Assignments</div>
+            <div className="stat-card-value">{assignments.length}</div>
+            <div className="stat-card-subtext">Active & completed papers</div>
           </div>
-          <div className="gauge-container">
-            <div className="gauge-svg-wrapper">
-              <svg width="90" height="55" viewBox="0 0 100 60">
-                <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#334155" strokeWidth="10" strokeLinecap="round" />
-                <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="var(--primary)" strokeWidth="10" strokeLinecap="round" strokeDasharray="125.66" strokeDashoffset="20.4" />
-              </svg>
-              <div className="gauge-value-text">83%</div>
-            </div>
-            <div className="gauge-sub-label">Avg. Rate</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#38bdf8', marginTop: '12px', fontSize: '13px', fontWeight: 600 }}>
+            <FileText size={16} />
+            <span>Click to see breakdown</span>
           </div>
         </div>
 
@@ -198,7 +163,7 @@ export default function Dashboard() {
 
       </div>
 
-      {/* Recent Assignments Header & Toggle */}
+      {/* Recent Assignments Header & View All */}
       <div className="recent-header">
         <div className="recent-title-wrapper">
           <span className="green-dot"></span>
@@ -238,91 +203,20 @@ export default function Dashboard() {
         <div className="assignments-grid">
           {displayedAssignments.map((assignment) => {
             const id = assignment.id || assignment._id;
-            const metrics = getCardSubmissionDetails(assignment);
-            
             return (
-              <div 
-                key={id} 
-                className="assignment-card"
-                onClick={() => handleCardClick(id, assignment.status)}
-                style={{ cursor: 'pointer' }}
-              >
-                {/* Card Top */}
-                <div className="card-top">
-                  <span className="card-subject-badge">{assignment.subject}</span>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span className={`card-status-tag ${metrics.statusClass}`}>{metrics.status}</span>
-                    <div style={{ position: 'relative' }}>
-                      <button 
-                        className="card-menu-btn" 
-                        onClick={(e) => toggleDropdown(e, id)}
-                        aria-label="Options"
-                      >
-                        <MoreVertical size={16} />
-                      </button>
-                      
-                      {activeDropdown === id && (
-                        <div className="card-menu-dropdown" onClick={(e) => e.stopPropagation()}>
-                          <button 
-                            className="dropdown-item"
-                            onClick={() => router.push(`/assignment/${id}`)}
-                          >
-                            <Eye size={14} />
-                            View Paper
-                          </button>
-                          <button 
-                            className="dropdown-item delete"
-                            onClick={(e) => handleDelete(e, id)}
-                          >
-                            <Trash2 size={14} />
-                            Delete
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Card Details */}
-                <div>
-                  <h3 className="card-title">{assignment.title}</h3>
-                  <div className="card-class-info">Class {assignment.classLevel} • {assignment.allowedTime} mins</div>
-                  
-                  {/* Submission Progress bar */}
-                  <div className="card-stats-row">
-                    <span className="card-stats-value">{metrics.submitted}</span>
-                    <span className="card-stats-total">/{metrics.total}</span>
-                    <span className="card-stats-label">Submitted</span>
-                  </div>
-                  <div className="card-progress-track">
-                    <div className="card-progress-bar" style={{ width: `${metrics.percent}%` }}></div>
-                  </div>
-                </div>
-
-                {/* Card Footer */}
-                <div className="card-footer">
-                  <div>
-                    <span className="card-date-label">Assigned: </span>
-                    <span className="card-date-value">
-                      {new Date(assignment.createdAt || Date.now()).toLocaleDateString('en-GB', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric'
-                      })}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="card-date-label">Due: </span>
-                    <span className="card-date-value">
-                      {new Date(assignment.dueDate).toLocaleDateString('en-GB', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric'
-                      })}
-                    </span>
-                  </div>
-                </div>
-              </div>
+              <AssignmentCard
+                key={id}
+                id={id}
+                title={assignment.title}
+                createdAt={assignment.createdAt}
+                dueDate={assignment.dueDate}
+                status={assignment.status}
+                isDropdownOpen={activeDropdown === id}
+                onToggleDropdown={toggleDropdown}
+                onView={() => router.push(`/assignment/${id}`)}
+                onDelete={handleDelete}
+                onClick={handleCardClick}
+              />
             );
           })}
         </div>
@@ -342,39 +236,30 @@ export default function Dashboard() {
         </button>
       </div>
 
-      {/* Modal: Submission Analytics (Gauge Card Click) */}
-      {showGaugeModal && (
-        <div className="modal-overlay" onClick={() => setShowGaugeModal(false)}>
+      {/* Modal: Total Assignments Breakdown */}
+      {showTotalModal && (
+        <div className="modal-overlay" onClick={() => setShowTotalModal(false)}>
           <div className="modal-content-card" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header-row">
-              <h3 className="modal-title">Class Submission Analytics</h3>
-              <button className="modal-close-btn" onClick={() => setShowGaugeModal(false)}>✕</button>
+              <h3 className="modal-title">Assignment Breakdown</h3>
+              <button className="modal-close-btn" onClick={() => setShowTotalModal(false)}>✕</button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '13px', lineHeight: '1.6' }}>
-              <p>Overall submission rate: <strong>83.7%</strong> across your current assignments.</p>
+              <p>You have created a total of <strong>{assignments.length} assignments</strong>.</p>
               <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '10px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span>Class 10-A (Science)</span>
-                  <strong>100% (50/50)</strong>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span>Class 10-A (Electricity)</span>
-                  <strong>84% (42/50)</strong>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span>Class 9-B (Chemistry)</span>
-                  <strong>90% (18/20)</strong>
-                </div>
+                {Object.keys(classBreakdown).length === 0 ? (
+                  <p style={{ color: 'var(--text-muted)' }}>No assignments recorded yet.</p>
+                ) : (
+                  Object.entries(classBreakdown).map(([cls, count]) => (
+                    <div key={cls} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                      <span>Class Level: {cls}</span>
+                      <strong>{count} {count === 1 ? 'assignment' : 'assignments'}</strong>
+                    </div>
+                  ))
+                )}
               </div>
-              <div style={{ backgroundColor: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', marginTop: '8px' }}>
-                <div style={{ fontWeight: 700, marginBottom: '4px' }}>💡 Recommendation</div>
-                Send a quick nudge reminder to the remaining 8 students in Class 10-A Electricity before tomorrow's deadline.
-              </div>
-              <button className="btn btn-primary" style={{ marginTop: '10px' }} onClick={() => {
-                setShowGaugeModal(false);
-                triggerToast('Reminders sent to all pending students!');
-              }}>
-                Nudge Remaining Students
+              <button className="btn btn-primary" style={{ marginTop: '10px' }} onClick={() => setShowTotalModal(false)}>
+                Done
               </button>
             </div>
           </div>
@@ -405,7 +290,7 @@ export default function Dashboard() {
                   <strong>8.2 hrs</strong>
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: '#eff6ff', padding: '12px', borderRadius: '8px', border: '1px solid #bfdbfe', color: '#1e3a8a', marginTop: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: 'var(--primary-light)', padding: '12px', borderRadius: '8px', border: '1px solid var(--primary)', color: 'var(--primary)', marginTop: '8px' }}>
                 <Award size={20} />
                 <span>You're in the <strong>top 5%</strong> of AI time-saving educators this week!</span>
               </div>
