@@ -24,7 +24,7 @@ export default function Sidebar() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // User Profile Store
-  const { user, fetchProfile, updateProfile } = useUserStore();
+  const { user, fetchProfile, updateProfile, mobileSidebarOpen, setMobileSidebarOpen } = useUserStore();
   const { assignments, fetchAssignments } = useAssignmentStore();
   const [showSchoolModal, setShowSchoolModal] = useState(false);
 
@@ -95,23 +95,40 @@ export default function Sidebar() {
 
   return (
     <>
-      <aside className="sidebar-container">
+      {mobileSidebarOpen && (
+        <div 
+          className="sidebar-mobile-overlay" 
+          onClick={() => setMobileSidebarOpen(false)}
+        />
+      )}
+      <aside className={`sidebar-container ${mobileSidebarOpen ? 'mobile-open' : ''}`}>
         {/* VedaAI Brand Logo */}
-        <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <Link 
+          href="/" 
+          className="sidebar-logo-link"
+          style={{ textDecoration: 'none', color: 'inherit' }}
+          onClick={() => setMobileSidebarOpen(false)}
+        >
           <div className="sidebar-logo" style={{ cursor: 'pointer' }}>
-            <div className="logo-icon" style={{ backgroundColor: '#000000', color: '#ffffff' }}>V</div>
+            <div className="logo-icon">V</div>
             <span className="logo-text">VedaAI</span>
           </div>
         </Link>
-
+ 
         {/* Main Action: Create Assignment Button */}
         <div className="sidebar-action">
-          <button className="create-btn" onClick={() => router.push('/create')}>
+          <button 
+            className="create-btn" 
+            onClick={() => {
+              router.push('/create');
+              setMobileSidebarOpen(false);
+            }}
+          >
             <Sparkles size={16} className="sparkle-icon" style={{ color: '#ffffff' }} />
             <span className="btn-text">Create Assignment</span>
           </button>
         </div>
-
+ 
         {/* Navigation Links */}
         <nav className="sidebar-nav">
           <ul className="nav-list">
@@ -125,12 +142,18 @@ export default function Sidebar() {
               } else if (item.name === 'Create Assignment') {
                 isActive = pathname === '/create';
               }
-
+ 
               return (
                 <li key={item.name} className="nav-item">
                   <Link 
                     href={item.path} 
-                    onClick={item.action || undefined}
+                    onClick={(e) => {
+                      if (item.action) {
+                        item.action(e);
+                      } else {
+                        setMobileSidebarOpen(false);
+                      }
+                    }}
                     className={`nav-link ${isActive ? 'active' : ''}`}
                   >
                     <item.icon size={18} className="nav-icon" />
@@ -140,13 +163,13 @@ export default function Sidebar() {
                         {assignments.length}
                       </span>
                     )}
-
+ 
                   </Link>
                 </li>
               );
             })}
           </ul>
-
+ 
           {/* Settings & Profile Area at Bottom */}
           <div className="sidebar-footer">
             <Link 
@@ -161,7 +184,10 @@ export default function Sidebar() {
             <div 
               className="school-card" 
               style={{ cursor: 'pointer', transition: 'all var(--transition-fast)' }}
-              onClick={() => setShowSchoolModal(true)}
+              onClick={() => {
+                setShowSchoolModal(true);
+                setMobileSidebarOpen(false);
+              }}
               title="Click to edit school details"
             >
               <div className="school-avatar" style={{ backgroundColor: '#e2fbe8', border: '1px solid #c2f0d0' }}>

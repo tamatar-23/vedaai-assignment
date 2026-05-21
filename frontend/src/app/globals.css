@@ -265,37 +265,7 @@ a {
   background: #94a3b8;
 }
 
-/* Responsive Rules */
-@media (max-width: 1024px) {
-  :root {
-    --sidebar-width: 80px; /* Mini sidebar */
-  }
-  .sidebar-text, .sidebar-school-info {
-    display: none;
-  }
-  .sidebar-logo {
-    justify-content: center;
-  }
-  .sidebar-nav-item {
-    justify-content: center;
-    padding: 12px;
-  }
-}
-
-@media (max-width: 768px) {
-  .app-container {
-    flex-direction: column;
-  }
-  .main-area {
-    height: auto;
-    overflow: visible;
-  }
-  .content-container {
-    padding: 16px;
-    height: auto;
-    overflow: visible;
-  }
-}
+/* Responsive rules relocated to the bottom to prevent layout override cascade issues */
 
 /* ==========================================
    Component Styling
@@ -316,30 +286,36 @@ a {
   top: 0;
 }
 
+.sidebar-logo-link {
+  width: 100%;
+  display: block;
+}
+
 .sidebar-logo {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   padding: 8px 12px;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .logo-icon {
-  width: 32px;
-  height: 32px;
+  width: 52px;
+  height: 52px;
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
   color: #ffffff;
-  border-radius: var(--radius-sm);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 18px;
-  box-shadow: 0 4px 8px rgba(249, 115, 22, 0.2);
+  font-size: 28px;
+  box-shadow: 0 4px 10px rgba(249, 115, 22, 0.25);
 }
 
 .logo-text {
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 800;
   color: var(--text-main);
   letter-spacing: -0.02em;
@@ -538,6 +514,25 @@ a {
 }
 
 .back-btn:hover {
+  background-color: var(--bg-app);
+  border-color: var(--text-light);
+}
+
+.mobile-menu-toggle-btn {
+  display: none;
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-main);
+  transition: all var(--transition-fast);
+}
+
+.mobile-menu-toggle-btn:hover {
   background-color: var(--bg-app);
   border-color: var(--text-light);
 }
@@ -754,7 +749,7 @@ a {
 /* Grid layout */
 .assignments-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 24px;
   margin-top: 24px;
 }
@@ -1804,9 +1799,13 @@ a {
 }
 
 /* Header Dropdowns */
+.header-dropdown-container {
+  position: relative;
+}
+
 .header-dropdown-menu {
   position: absolute;
-  top: 60px;
+  top: calc(100% + 8px);
   right: 0;
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -2269,6 +2268,230 @@ a {
 .card-date-value {
   color: var(--text-main);
   font-weight: 600;
+}
+
+.form-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* Mobile Responsive Media Queries */
+
+@media (max-width: 768px) {
+  .dashboard-stats-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .illustration-card {
+    grid-column: span 2;
+    margin: 0 auto;
+  }
+  .grading-banner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 20px 24px;
+  }
+  .grading-banner-left {
+    flex-direction: row;
+  }
+  .grading-banner-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .exam-paper-container {
+    padding: 24px 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Question configurations table stacked to block cards on mobile */
+  .question-type-table,
+  .question-type-table thead,
+  .question-type-table tbody,
+  .question-type-table th,
+  .question-type-table tr,
+  .question-type-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .question-type-table thead {
+    display: none; /* Hide header rows on mobile */
+  }
+
+  .question-type-table tr {
+    border-bottom: 2px solid var(--border-color);
+    padding: 16px 0;
+    position: relative;
+    background-color: var(--bg-card);
+    margin-bottom: 12px;
+    border-radius: var(--radius-md);
+  }
+
+  .question-type-table td {
+    padding: 8px 12px;
+    border-bottom: none;
+    text-align: left !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  .question-type-table td:nth-child(1) {
+    font-weight: 700;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--border-color);
+  }
+
+  /* Prepend labels on mobile */
+  .question-type-table td:nth-child(2)::before {
+    content: "Number of Questions:";
+    font-weight: 600;
+    color: var(--text-light);
+    font-size: 13px;
+  }
+
+  .question-type-table td:nth-child(3)::before {
+    content: "Marks per Question:";
+    font-weight: 600;
+    color: var(--text-light);
+    font-size: 13px;
+  }
+
+  .question-type-table td:nth-child(4) {
+    justify-content: flex-end;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border-color);
+  }
+
+  .question-type-table td:nth-child(2) .stepper-control,
+  .question-type-table td:nth-child(3) .stepper-control {
+    margin: 0;
+  }
+
+  .form-grid-2col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .exam-mcq-options {
+    grid-template-columns: 1fr !important;
+  }
+
+  .action-bar {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch !important;
+  }
+
+  .action-bar-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .action-bar-buttons button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .user-name {
+    display: none;
+  }
+  .breadcrumb-main,
+  .breadcrumb-separator {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-stats-row {
+    grid-template-columns: 1fr;
+  }
+  .illustration-card {
+    grid-column: span 1;
+  }
+}
+
+/* --- Relocated Media Queries for Layout Cascade Resolution --- */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 80px; /* Mini sidebar */
+  }
+  .sidebar-text, .sidebar-school-info {
+    display: none;
+  }
+  .sidebar-logo {
+    justify-content: center;
+  }
+  .sidebar-nav-item {
+    justify-content: center;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-toggle-btn {
+    display: flex;
+  }
+  .header-container {
+    padding: 0 16px;
+  }
+  .sidebar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 260px;
+    height: 100vh;
+    z-index: 1000;
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: none;
+    border-right: 1px solid var(--border-color);
+  }
+  .sidebar-container.mobile-open {
+    transform: translateX(0) !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
+  }
+  .sidebar-container.mobile-open .sidebar-text,
+  .sidebar-container.mobile-open .sidebar-school-info {
+    display: block;
+  }
+  .sidebar-container.mobile-open .sidebar-logo {
+    justify-content: flex-start;
+  }
+  .sidebar-mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 999;
+  }
+  .app-container {
+    flex-direction: row;
+  }
+  .main-area {
+    width: 100vw;
+    max-width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .content-container {
+    padding: 16px;
+    height: calc(100vh - var(--header-height));
+    overflow-y: auto;
+  }
 }
 
 

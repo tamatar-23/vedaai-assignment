@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { Bell, ArrowLeft, ChevronDown, HelpCircle, User, LogOut, Shield, CheckCircle, Edit3, Sun, Moon } from 'lucide-react';
+import { Bell, ArrowLeft, ChevronDown, HelpCircle, User, LogOut, Shield, CheckCircle, Edit3, Sun, Moon, Menu } from 'lucide-react';
 import { useUserStore } from '@/store/useUserStore';
 
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const { user, fetchProfile, updateProfile } = useUserStore();
+  const { user, fetchProfile, updateProfile, mobileSidebarOpen, setMobileSidebarOpen } = useUserStore();
 
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -145,6 +145,13 @@ export default function Header() {
     <>
       <header className="header-container" style={{ position: 'relative' }}>
         <div className="header-left">
+          <button 
+            className="mobile-menu-toggle-btn" 
+            onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+            aria-label="Toggle Menu"
+          >
+            <Menu size={20} />
+          </button>
           {!isHome && (
             <button className="back-btn" onClick={() => router.push('/')} aria-label="Go Back">
               <ArrowLeft size={18} />
@@ -182,58 +189,62 @@ export default function Header() {
             <HelpCircle size={20} />
           </button>
 
-          {/* Notification Bell */}
-          <button 
-            className="icon-badge-btn" 
-            aria-label="Notifications" 
-            onClick={handleNotificationsClick}
-          >
-            <Bell size={20} />
-            <span className="badge-dot"></span>
-          </button>
+          {/* Notification Bell Container */}
+          <div className="header-dropdown-container">
+            <button 
+              className="icon-badge-btn" 
+              aria-label="Notifications" 
+              onClick={handleNotificationsClick}
+            >
+              <Bell size={20} />
+              <span className="badge-dot"></span>
+            </button>
 
-          {/* User Profile Dropdown */}
-          <div className="user-profile" onClick={handleProfileClick}>
-            <div className="user-avatar" style={{ backgroundColor: 'var(--primary-light)', color: 'var(--primary)', fontWeight: 'bold' }}>
-              {displayInitials}
-            </div>
-            <span className="user-name">{displayName}</span>
-            <ChevronDown size={14} className="chevron-icon" />
+            {/* Notifications Dropdown */}
+            {showNotifications && (
+              <div className="header-dropdown-menu" onClick={(e) => e.stopPropagation()}>
+                <div className="dropdown-header">Notifications</div>
+                <div style={{ padding: '8px 12px', fontSize: '12px', color: 'var(--text-muted)' }}>
+                  <div style={{ fontWeight: 600, color: 'var(--text-main)', marginBottom: '4px' }}>✨ Real AI Engine Connected</div>
+                  Your Gemini API Key is active. All future generations will use live AI.
+                </div>
+                <div style={{ padding: '8px 12px', fontSize: '12px', color: 'var(--text-muted)', borderTop: '1px solid var(--border-color)' }}>
+                  <div style={{ fontWeight: 600, color: 'var(--text-main)', marginBottom: '4px' }}>🎓 Welcome back {displayName.split(' ')[0]}</div>
+                  Ready to review student performance and generate papers.
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Notifications Dropdown */}
-          {showNotifications && (
-            <div className="header-dropdown-menu" onClick={(e) => e.stopPropagation()}>
-              <div className="dropdown-header">Notifications</div>
-              <div style={{ padding: '8px 12px', fontSize: '12px', color: 'var(--text-muted)' }}>
-                <div style={{ fontWeight: 600, color: 'var(--text-main)', marginBottom: '4px' }}>✨ Real AI Engine Connected</div>
-                Your Gemini API Key is active. All future generations will use live AI.
+          {/* User Profile Container */}
+          <div className="header-dropdown-container">
+            <div className="user-profile" onClick={handleProfileClick}>
+              <div className="user-avatar" style={{ backgroundColor: 'var(--primary-light)', color: 'var(--primary)', fontWeight: 'bold' }}>
+                {displayInitials}
               </div>
-              <div style={{ padding: '8px 12px', fontSize: '12px', color: 'var(--text-muted)', borderTop: '1px solid var(--border-color)' }}>
-                <div style={{ fontWeight: 600, color: 'var(--text-main)', marginBottom: '4px' }}>🎓 Welcome back {displayName.split(' ')[0]}</div>
-                Ready to review student performance and generate papers.
-              </div>
+              <span className="user-name">{displayName}</span>
+              <ChevronDown size={14} className="chevron-icon" />
             </div>
-          )}
 
-          {/* Profile Menu Dropdown */}
-          {showProfileMenu && (
-            <div className="header-dropdown-menu" onClick={(e) => e.stopPropagation()}>
-              <div className="dropdown-header">Account Details</div>
-              <button className="dropdown-action-item" onClick={handleOpenEditModal}>
-                <User size={14} />
-                My Profile
-              </button>
-              <button className="dropdown-action-item" onClick={() => triggerToast("Security settings are locked by Admin.")}>
-                <Shield size={14} />
-                Admin Console
-              </button>
-              <button className="dropdown-action-item danger" onClick={() => triggerToast("Logout action is simulated.")}>
-                <LogOut size={14} />
-                Logout
-              </button>
-            </div>
-          )}
+            {/* Profile Menu Dropdown */}
+            {showProfileMenu && (
+              <div className="header-dropdown-menu" onClick={(e) => e.stopPropagation()}>
+                <div className="dropdown-header">Account Details</div>
+                <button className="dropdown-action-item" onClick={handleOpenEditModal}>
+                  <User size={14} />
+                  My Profile
+                </button>
+                <button className="dropdown-action-item" onClick={() => triggerToast("Security settings are locked by Admin.")}>
+                  <Shield size={14} />
+                  Admin Console
+                </button>
+                <button className="dropdown-action-item danger" onClick={() => triggerToast("Logout action is simulated.")}>
+                  <LogOut size={14} />
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 

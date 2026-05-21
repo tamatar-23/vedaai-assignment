@@ -13,9 +13,11 @@ interface UserState {
   user: IUserProfile | null;
   loading: boolean;
   error: string | null;
+  mobileSidebarOpen: boolean;
   
   fetchProfile: () => Promise<IUserProfile | null>;
   updateProfile: (data: Partial<IUserProfile>) => Promise<boolean>;
+  setMobileSidebarOpen: (open: boolean) => void;
 }
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -24,6 +26,8 @@ export const useUserStore = create<UserState>((set) => ({
   user: null,
   loading: false,
   error: null,
+  mobileSidebarOpen: false,
+  setMobileSidebarOpen: (open: boolean) => set({ mobileSidebarOpen: open }),
 
   fetchProfile: async () => {
     set({ loading: true, error: null });

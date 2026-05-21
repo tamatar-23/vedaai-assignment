@@ -84,15 +84,23 @@ graph TD
 
 The frontend is a bespoke React/Next.js application styled using Vanilla CSS variables for high-fidelity animations, theme transitions, and layout structure:
 
-* **Premium Glassmorphic UI**: Sleek, modern cards using backdrop filters, glowing subtle gradients, and transparent border treatments matching Figma specifications.
+* **Premium Glassmorphic UI**: Sleek, modern cards using backdrop filters, glowing subtle gradients, transparent border treatments, and premium hover translation transformations.
 * **Global Dark & Light Modes**: A fully integrated layout color token system with a toggle switch in the header. The application preserves the active mode in `localStorage` across page visits.
-* **Aligned Form Elements**: The Configure Question Types table features a perfectly aligned grid. Select dropdowns, custom numeric stepper counters, and action icons share a uniform `38px` height with responsive box-sizing, resolving all alignment issues.
+* **UI Polish & Details**:
+  * **Branding & Logo**: Centered orange/black gradient brand logo on the sidebar (Icon: `52px`, Text: `28px`).
+  * **Aligned Form Elements**: Uniform `38px` height with responsive box-sizing for question type selectors, custom numeric steppers, and row deletion buttons.
+  * **Relative Dropdowns**: Header dropdown panels (Profile settings and Notifications) position dynamically relative to their triggers to prevent clamping to screen edges.
+* **Full Mobile Responsiveness**:
+  * **Collapsible Sidebar**: Auto-collapses into a mobile drawer with overlay blur; toggled via a hamburger menu in the header.
+  * **Responsive Stats Grid**: Translates from a multi-column dashboard grid into 2-column or 1-column layouts dynamically.
+  * **Block-Stacked Question Table**: Restructures the question configuration tables into grid cards with CSS-prepended row label descriptions on small screens (`<= 600px`).
+  * **Vertical Stacked Actions**: Forms, due dates, action bars, and option buttons stack vertically with `100%` width tap areas on mobile.
 * **WebSocket Progress Terminal**: A retro command-line log widget integrated into the loading screen that streams live backend worker status updates during generation.
 * **Glassmorphic Generation Screen**: An interactive full-screen overlay displaying a clean, responsive progress circular loader and the log terminal.
 * **Dynamic Teacher Profile settings**: Edit full name, school, and branch with real-time UI updates reflected immediately in the sidebar and dashboard greetings.
 * **Standalone Assignments Dashboard**: A dedicated page with instant search, filterable lists, card status tags, and action dropdowns (View, Delete).
 * **Interactive Performance Analytics**: Dashboard widgets showcasing hours saved, graded submissions, and interactive detail modal pop-ups.
-* **Exam Preview & Toggleable Answer Keys**: Read-only layout resembling standard paper, equipped with print functionality, PDF downloads, and toggles for showing or hiding answer keys.
+* **Exam Preview & Toggleable Answer Keys**: Read-only layout resembling standard paper, equipped with print functionality, dynamic PDF downloads, and toggles for showing or hiding answer keys.
 
 ---
 
@@ -102,7 +110,7 @@ The frontend is a bespoke React/Next.js application styled using Vanilla CSS var
 * **BullMQ Queue Handling**: Offloads heavy AI generation jobs to a Redis-backed queue for reliable background processing.
 * **WebSocket integration**: Delivers step-by-step logs directly from the queue worker to the client.
 * **High-Fidelity Mock Fallback Mode**: Automatically falls back to memory/file-based JSON DB storage (`backend/mock_db.json`) if MongoDB or Redis are not running, enabling easy grading without databases.
-* **Dynamic PDF Generator**: Generates formatted, standard-compliant PDF documents using safe character encoding to avoid layout double dashes.
+* **Dynamic PDF Generator**: Generates formatted, standard-compliant PDF documents using PDFKit with dynamic server URL environment resolution, dynamic creator school whitelists, and safe character encoding (pipe ` | ` separators) to avoid encoding breakages.
 
 ---
 
