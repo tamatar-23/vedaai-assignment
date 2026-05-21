@@ -27,7 +27,7 @@ app.use('/api', assignmentRouter);
 app.use('/api', userRouter);
 
 // Welcome / Status route at root to confirm API is running
-app.get('/', (req, res) => {
+app.get(['/', '/api'], (req, res) => {
   res.status(200).json({
     status: 'OK',
     message: 'VedaAI Assessment Creator API is running successfully!',
