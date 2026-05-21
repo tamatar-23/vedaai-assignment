@@ -78,6 +78,14 @@ graph TD
 5. **Real-time Log Stream**: Every incremental step (loading context, generating MCQs, formatting sections) is published to the Redis channel and sent via WebSockets to the frontend.
 6. **PDF Creation**: The worker compiles the generated sections into a PDF using PDFKit and updates the assignment status to `completed`.
 
+### Why Google Gemini 2.5 Flash?
+
+The platform uses Google **Gemini 2.5 Flash** specifically to power the AI Assessment Creator due to its industry-leading characteristics:
+- **Ultra-Low Latency**: Highly optimized for speed, producing question generation results within seconds to support real-time progress streaming.
+- **Cost Efficiency**: High-performance reasoning at a fraction of the API cost of larger LLMs, keeping high-volume generation extremely affordable.
+- **Enormous Context Window**: A native 1M+ token limit easily handles extensive course syllabi, formatting rules, and complex rubric guidelines.
+- **Reliable Structured Outputs**: Consistent JSON payloads that match MongoDB schema requirements without parse errors.
+
 ---
 
 ## Frontend Features & Design System

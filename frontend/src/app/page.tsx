@@ -7,7 +7,8 @@ import {
   TrendingUp, 
   CheckCircle,
   FileText,
-  Award
+  Award,
+  User
 } from 'lucide-react';
 import { useAssignmentStore } from '@/store/useAssignmentStore';
 import { useUserStore } from '@/store/useUserStore';
@@ -162,16 +163,21 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Dynamic Avatar Card with float badges */}
-        <div className="illustration-card">
-          <div className="avatar-circle-wrapper" style={{ backgroundColor: 'var(--primary-light)' }}>
-            <span style={{ fontSize: '32px', fontWeight: 800, color: 'var(--primary)' }}>
+        {/* Premium Teacher Profile Card */}
+        <div className="stat-card profile-card" onClick={() => triggerToast("Click 'My Profile' in the top right menu to edit details.")} title="View profile details" style={{ cursor: 'pointer' }}>
+          <div className="profile-card-header">
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div className="stat-card-title">Teacher Profile</div>
+              <div className="profile-card-name-value">{user?.name || 'Loading...'}</div>
+              <div className="stat-card-subtext" style={{ color: 'var(--text-muted)' }}>{user?.schoolName || 'Veda School'}</div>
+            </div>
+            <div className="profile-card-avatar-small">
               {userInitials}
-            </span>
-            <div className="avatar-floating-badge badge-top-left" style={{ cursor: 'pointer' }} title="Top Performer Badge" onClick={() => triggerToast("Top Performer Badge unlocked!")}>🏆</div>
-            <div className="avatar-floating-badge badge-top-right" style={{ cursor: 'pointer' }} title="Fast Grader Badge" onClick={() => triggerToast("Fast Grader Badge unlocked!")}>⚡</div>
-            <div className="avatar-floating-badge badge-bottom-left" style={{ cursor: 'pointer' }} title="Content Creator Badge" onClick={() => triggerToast("Content Creator Badge unlocked!")}>📚</div>
-            <div className="avatar-floating-badge badge-bottom-right" style={{ cursor: 'pointer' }} title="Certified Educator Badge" onClick={() => triggerToast("Certified Educator Badge unlocked!")}>🎓</div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--primary)', marginTop: '12px', fontSize: '13px', fontWeight: 600 }}>
+            <User size={16} />
+            <span>Active Educator</span>
           </div>
         </div>
 
