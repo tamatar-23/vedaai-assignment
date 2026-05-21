@@ -26,6 +26,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', assignmentRouter);
 app.use('/api', userRouter);
 
+// Welcome / Status route at root to confirm API is running
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'VedaAI Assessment Creator API is running successfully!',
+    endpoints: {
+      health: '/health',
+      assignments: '/api/assignments',
+      profile: '/api/profile'
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Basic health check route
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
