@@ -22,6 +22,9 @@ export function generateAssignmentPDF(assignment: any): Promise<Buffer> {
       };
 
       // Header: School Info (Delhi Public School, Sector-4, Bokaro style)
+      const schoolTitle = (assignment.schoolName || 'DELHI PUBLIC SCHOOL').toUpperCase();
+      doc.font('Helvetica-Bold').fontSize(11).fillColor('#64748b').text(schoolTitle, { align: 'center' });
+      doc.moveDown(0.3);
       doc.font('Helvetica-Bold').fontSize(20).fillColor('#1e293b').text(assignment.title, { align: 'center' });
       doc.moveDown(0.2);
       doc.fontSize(14).fillColor('#475569').text(`Subject: ${assignment.subject}`, { align: 'center' });

@@ -1,6 +1,9 @@
 import { Router, Request, Response } from 'express';
+import fs from 'fs';
+import path from 'path';
 import { connectDB, mockDb, IS_MOCK_MODE } from '../config/db.js';
 import Assignment from '../models/Assignment.js';
+import User from '../models/User.js';
 import { addGenerationJob } from '../queues/queue.js';
 import { generateAssignmentPDF } from '../services/pdf.js';
 
@@ -44,6 +47,30 @@ router.post('/assignments', async (req: Request, res: Response) => {
   const { title, subject, classLevel, allowedTime, maxMarks, dueDate, questionTypes, additionalInstructions } = req.body;
 
   try {
+    // Determine active school name and teacher name from database or mock
+    let schoolName = 'Delhi Public School';
+    let teacherName = 'Gourav Mishra';
+    let userIdObj: any = null;
+    try {
+      if (IS_MOCK_MODE) {
+        const mockUserPath = path.join(process.cwd(), 'mock_user.json');
+        if (fs.existsSync(mockUserPath)) {
+          const userObj = JSON.parse(fs.readFileSync(mockUserPath, 'utf8'));
+          schoolName = userObj.schoolName || schoolName;
+          teacherName = userObj.name || teacherName;
+        }
+      } else {
+        const userObj = await User.findOne();
+        if (userObj) {
+          schoolName = userObj.schoolName;
+          teacherName = userObj.name;
+          userIdObj = userObj._id;
+        }
+      }
+    } catch (e) {
+      console.error('Failed to pre-populate user details for assignment:', e);
+    }
+
     let assignmentData: any = {
       title,
       subject,
@@ -56,7 +83,12 @@ router.post('/assignments', async (req: Request, res: Response) => {
       status: 'pending',
       progress: 0,
       stepLog: 'Initializing assignment creation...',
-      sections: []
+      sections: [],
+      schoolName,
+      teacherName,
+      userId: userIdObj,
+      user: userIdObj,
+      teacher: userIdObj
     };
 
     let newAssignment: any = null;

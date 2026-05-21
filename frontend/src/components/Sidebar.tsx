@@ -107,7 +107,7 @@ export default function Sidebar() {
         {/* Main Action: Create Assignment Button */}
         <div className="sidebar-action">
           <button className="create-btn" onClick={() => router.push('/create')}>
-            <Sparkles size={16} className="sparkle-icon" style={{ color: 'var(--primary)' }} />
+            <Sparkles size={16} className="sparkle-icon" style={{ color: '#ffffff' }} />
             <span className="btn-text">Create Assignment</span>
           </button>
         </div>

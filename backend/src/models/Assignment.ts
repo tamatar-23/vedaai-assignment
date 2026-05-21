@@ -27,6 +27,11 @@ export interface IAssignment extends Document {
   progress: number;
   stepLog: string;
   sections: ISection[];
+  schoolName?: string;
+  teacherName?: string;
+  userId?: mongoose.Types.ObjectId;
+  user?: mongoose.Types.ObjectId;
+  teacher?: mongoose.Types.ObjectId;
   createdAt: Date;
 }
 
@@ -57,6 +62,11 @@ const AssignmentSchema = new Schema<IAssignment>({
   progress: { type: Number, default: 0 },
   stepLog: { type: String, default: 'Assignment created' },
   sections: [SectionSchema],
+  schoolName: { type: String, required: false },
+  teacherName: { type: String, required: false },
+  userId: { type: Schema.Types.ObjectId, ref: 'User', required: false },
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: false },
+  teacher: { type: Schema.Types.ObjectId, ref: 'User', required: false },
   createdAt: { type: Date, default: Date.now }
 });
 

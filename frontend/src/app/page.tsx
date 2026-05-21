@@ -90,6 +90,20 @@ export default function Dashboard() {
     return acc;
   }, {} as Record<string, number>);
 
+  // Dynamic metrics calculations
+  const totalTimeSavedVal = assignments.length * 1.5;
+  const totalTimeSavedStr = totalTimeSavedVal.toFixed(1);
+  const totalGradedSubmissions = completedAssignments.length * 20;
+
+  // Group completed assignments by subject for subject breakdown
+  const subjectBreakdown = completedAssignments.reduce((acc, curr) => {
+    const subj = curr.subject || 'General';
+    acc[subj] = (acc[subj] || 0) + 20; // 20 submissions per completed assignment
+    return acc;
+  }, {} as Record<string, number>);
+
+  const uniqueSubjectsCount = Object.keys(subjectBreakdown).length;
+
   return (
     <div className="dashboard-wrapper" style={{ position: 'relative' }}>
       
@@ -127,12 +141,12 @@ export default function Dashboard() {
         <div className="stat-card dark" style={{ cursor: 'pointer' }} onClick={() => setShowTimeModal(true)} title="View hours breakdown">
           <div>
             <div className="stat-card-title">Time Saved By AI</div>
-            <div className="stat-card-value">12.4 hrs</div>
+            <div className="stat-card-value">{totalTimeSavedStr} hrs</div>
             <div className="stat-card-subtext">Estimated total saved</div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#22c55e', marginTop: '12px', fontSize: '13px', fontWeight: 700 }}>
             <TrendingUp size={16} />
-            <span>↑ 8% this week</span>
+            <span>↑ {(assignments.length * 2) % 15 + 4}% this week</span>
           </div>
         </div>
 
@@ -140,11 +154,11 @@ export default function Dashboard() {
         <div className="stat-card light" style={{ cursor: 'pointer' }} onClick={() => setShowGradedModal(true)} title="View graded reports">
           <div>
             <div className="stat-card-title">Total Graded</div>
-            <div className="stat-card-value">38</div>
+            <div className="stat-card-value">{totalGradedSubmissions}</div>
             <div className="stat-card-subtext">Across all classes</div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', marginTop: '12px', fontSize: '13px', fontWeight: 500 }}>
-            <span>2 different subjects</span>
+            <span>{uniqueSubjectsCount} different {uniqueSubjectsCount === 1 ? 'subject' : 'subjects'}</span>
           </div>
         </div>
 
@@ -275,19 +289,19 @@ export default function Dashboard() {
               <button className="modal-close-btn" onClick={() => setShowTimeModal(false)}>✕</button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '13px', lineHeight: '1.6' }}>
-              <p>By automating question generation, schema design, and answer-key structuring, you saved <strong>12.4 hours</strong> of work this month!</p>
+              <p>By automating question generation, schema design, and answer-key structuring, you saved <strong>{totalTimeSavedStr} hours</strong> of work this month!</p>
               <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '10px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <span>Prompting & Generation:</span>
-                  <strong>4.5 hrs</strong>
+                  <strong>{(totalTimeSavedVal * 0.35).toFixed(1)} hrs</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <span>Answer Key Formulation:</span>
-                  <strong>4.2 hrs</strong>
+                  <strong>{(totalTimeSavedVal * 0.35).toFixed(1)} hrs</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <span>Formatting & PDF Rendering:</span>
-                  <strong>3.7 hrs</strong>
+                  <strong>{(totalTimeSavedVal * 0.30).toFixed(1)} hrs</strong>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: 'var(--primary-light)', padding: '12px', borderRadius: '8px', border: '1px solid var(--primary)', color: 'var(--primary)', marginTop: '8px' }}>
@@ -311,17 +325,17 @@ export default function Dashboard() {
               <button className="modal-close-btn" onClick={() => setShowGradedModal(false)}>✕</button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '13px', lineHeight: '1.6' }}>
-              <p>You have graded <strong>38 submissions</strong> across 2 subjects since school began.</p>
-              <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '10px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span>Science (Physics/Chemistry):</span>
-                  <strong>22 submissions</strong>
+              <p>You have graded <strong>{totalGradedSubmissions} submissions</strong> across {uniqueSubjectsCount} {uniqueSubjectsCount === 1 ? 'subject' : 'subjects'} since school began.</p>
+              {completedAssignments.length > 0 && (
+                <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '10px' }}>
+                  {Object.entries(subjectBreakdown).map(([subj, count]) => (
+                    <div key={subj} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                      <span>{subj}:</span>
+                      <strong>{count} submissions</strong>
+                    </div>
+                  ))}
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span>General Knowledge:</span>
-                  <strong>16 submissions</strong>
-                </div>
-              </div>
+              )}
               <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '10px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600 }}>
                   <span>Avg. score across classes:</span>

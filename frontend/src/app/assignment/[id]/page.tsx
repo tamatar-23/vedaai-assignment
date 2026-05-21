@@ -15,6 +15,7 @@ import {
   Award
 } from 'lucide-react';
 import { useAssignmentStore, IAssignment } from '@/store/useAssignmentStore';
+import { useUserStore } from '@/store/useUserStore';
 
 export default function AssignmentOutput() {
   const router = useRouter();
@@ -31,8 +32,17 @@ export default function AssignmentOutput() {
     resetGenerationState
   } = useAssignmentStore();
 
+  const { user, fetchProfile } = useUserStore();
+
   const [showAnswerKey, setShowAnswerKey] = useState(false);
   const logEndRef = useRef<HTMLDivElement | null>(null);
+
+  // Load user profile on mount if not loaded
+  useEffect(() => {
+    if (!user) {
+      fetchProfile();
+    }
+  }, [user, fetchProfile]);
 
   // Helper to extract and display only the actual additional instructions/focus notes
   const getDisplayInstructions = (instructions?: string): string => {
@@ -236,14 +246,14 @@ export default function AssignmentOutput() {
 
       {/* Main Exam Paper Card */}
       <div className="exam-paper-container">
-        {/* Exam Header */}
+        {/* Header */}
         <div className="exam-paper-header">
-          <h1 className="exam-school-title">DEMO PUBLIC SCHOOL</h1>
+          <h1 className="exam-school-title">{(activeAssignment?.schoolName || user?.schoolName || 'DELHI PUBLIC SCHOOL').toUpperCase()}</h1>
           <p className="exam-subject-sub">{activeAssignment.subject.toUpperCase()} ASSESSMENT</p>
           <p className="exam-class-sub">Class: {activeAssignment.classLevel} | Term Assessment</p>
         </div>
 
-        {/* Exam Metadata (Marks / Time) */}
+        {/* Metadata Box */}
         <div className="exam-meta-box">
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Clock size={14} />
@@ -255,7 +265,7 @@ export default function AssignmentOutput() {
           </div>
         </div>
 
-        {/* General Instructions */}
+        {/* Instructions */}
         <div className="exam-general-instructions">
           <strong>General Instructions:</strong>
           <ol style={{ paddingLeft: '16px', marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
@@ -268,19 +278,19 @@ export default function AssignmentOutput() {
           </ol>
         </div>
 
-        {/* Student Details Blank Lines */}
+        {/* Student Form (with underscores/dashes removed to fix overlap with border-bottom) */}
         <div className="exam-student-form">
           <div className="student-input-group">
             <span>NAME:</span>
-            <input type="text" className="student-input-line" disabled placeholder="__________________________" />
+            <input type="text" className="student-input-line" disabled />
           </div>
           <div className="student-input-group">
             <span>ROLL NO:</span>
-            <input type="text" className="student-input-line" disabled placeholder="___________" />
+            <input type="text" className="student-input-line" disabled />
           </div>
           <div className="student-input-group">
             <span>SECTION:</span>
-            <input type="text" className="student-input-line" disabled placeholder="___________" />
+            <input type="text" className="student-input-line" disabled />
           </div>
         </div>
 
