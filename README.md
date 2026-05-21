@@ -2,9 +2,11 @@
 
 VedaAI is an advanced, premium AI-powered Assessment Creator designed for educators. It enables teachers to instantly generate structured question papers (MCQs, Short Answers, Long Answers, and Very Long Answers), stream live WebSocket logs of the generation progress, view interactive class performance analytics, toggle between light and dark modes, and manage customized teacher profiles.
 
+---
+
 ## Architecture Overview
 
-The system follows a decoupling-first model using a Next.js Frontend, an Express Backend API, a Redis-backed BullMQ job queue, and a MongoDB / local JSON fallback store integrated with the Google Gemini AI API for intelligent paper generation.
+The system follows a decoupling-first model using a Next.js Frontend, an Express Backend API, a Redis-backed BullMQ job queue, and a MongoDB or local JSON fallback database integrated with the Google Gemini AI API for intelligent paper generation.
 
 ### System Architecture Flow
 
@@ -78,51 +80,49 @@ graph TD
 
 ---
 
-## Core Features Implemented
+## Frontend Features & Design System
 
-- **AI Question Generation Form**: Set question types (including MCQ, Short Answer, Long Answer, and Very Long Answer), counts, marks per question, allowed time, and specify custom additional instructions or upload reference materials.
-- **Aligned Form Elements**: The Configure Question Types table features a perfectly aligned grid. All select dropdowns, stepper controls, numeric inputs, and trash icons share a matching `38px` height with responsive box-sizing, resolving all vertical and horizontal spacing alignment glitches.
-- **Support for Basic Subjects**: Added drop-down selectors and template support for Mathematics, Science, English, Social Studies, Computers, and Hindi.
-- **WebSocket Streaming Log Terminal**: Displays live worker processing progress and logging logs in a vintage terminal widget.
-- **Premium Glassmorphic Loader**: Redesigned generation overlay with a glassmorphism theme, progress percentage tracker, and responsive streaming log container that adapts to both light and dark backgrounds.
-- **Global Dark Mode**: Fully integrated layout color tokens with a toggle button in the header and persistent state saved via `localStorage`. All input controls, buttons, checkboxes, dialog boxes, and the exam page preview adapt to the selected theme.
-- **Dynamic Teacher Profile & Settings**: Edit full name, school details, and branch directly in the app. Updates the sidebar card and main welcome greeting dynamically.
-- **Separated Assignments Dashboard**: A standalone `/assignments` page equipped with instant fuzzy-search, card option dropdowns ("View Paper", "Delete"), status tagging, and pagination cards.
-- **Toned Down Analytics Widgets**: Realistic dashboard mock metrics (38 graded submissions, 12.4 hours saved) with details pop-ups and certified educator badge gamification systems.
-- **Toggleable Answer Keys**: Inside the assignment detail page, teachers can toggle answer keys visibility, print, or download PDFs.
-- **Production-Ready PDF Exporter**: PDF generation uses standard ASCII pipe separators (` | `) instead of Unicode characters, preventing encoding issues and double dashes. The PDF download action dynamically resolves production endpoints using `process.env.NEXT_PUBLIC_API_URL`.
+The frontend is a bespoke React/Next.js application styled using Vanilla CSS variables for high-fidelity animations, theme transitions, and layout structure:
+
+* **Premium Glassmorphic UI**: Sleek, modern cards using backdrop filters, glowing subtle gradients, and transparent border treatments matching Figma specifications.
+* **Global Dark & Light Modes**: A fully integrated layout color token system with a toggle switch in the header. The application preserves the active mode in `localStorage` across page visits.
+* **Aligned Form Elements**: The Configure Question Types table features a perfectly aligned grid. Select dropdowns, custom numeric stepper counters, and action icons share a uniform `38px` height with responsive box-sizing, resolving all alignment issues.
+* **WebSocket Progress Terminal**: A retro command-line log widget integrated into the loading screen that streams live backend worker status updates during generation.
+* **Glassmorphic Generation Screen**: An interactive full-screen overlay displaying a clean, responsive progress circular loader and the log terminal.
+* **Dynamic Teacher Profile settings**: Edit full name, school, and branch with real-time UI updates reflected immediately in the sidebar and dashboard greetings.
+* **Standalone Assignments Dashboard**: A dedicated page with instant search, filterable lists, card status tags, and action dropdowns (View, Delete).
+* **Interactive Performance Analytics**: Dashboard widgets showcasing hours saved, graded submissions, and interactive detail modal pop-ups.
+* **Exam Preview & Toggleable Answer Keys**: Read-only layout resembling standard paper, equipped with print functionality, PDF downloads, and toggles for showing or hiding answer keys.
 
 ---
 
-## Requirements and Prerequisites
+## Backend Features
 
-### Softwares Required:
-- **Node.js** (v18.0.0 or higher)
-- **NPM** (v9.0.0 or higher)
-- **Docker & Docker Compose** (Recommended for local Redis and MongoDB services)
-
-### API Credentials:
-- **Google Gemini API Key**: Obtain one from Google AI Studio.
+* **Express API Architecture**: Modular routers managing user profiles and assignment data models.
+* **BullMQ Queue Handling**: Offloads heavy AI generation jobs to a Redis-backed queue for reliable background processing.
+* **WebSocket integration**: Delivers step-by-step logs directly from the queue worker to the client.
+* **High-Fidelity Mock Fallback Mode**: Automatically falls back to memory/file-based JSON DB storage (`backend/mock_db.json`) if MongoDB or Redis are not running, enabling easy grading without databases.
+* **Dynamic PDF Generator**: Generates formatted, standard-compliant PDF documents using safe character encoding to avoid layout double dashes.
 
 ---
 
 ## Configuration Setup
 
-### Backend Environment Configuration
+### Backend Configuration
 Create a `.env` file in the `backend/` directory:
 ```env
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/vedaai
-REDIS_URL=redis://localhost:6379
-GEMINI_API_KEY=AIzaSyDFCf...YourGeminiAPIKeyHere
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.abcde.mongodb.net/vedaai?retryWrites=true&w=majority
+REDIS_URL=rediss://default:<password>@your-redis-broker.upstash.io:6379
+GEMINI_API_KEY=AIzaSy...YourGeminiAPIKeyHere
 ```
-*Note: If MongoDB or Redis are not detected, the backend will automatically enter Mock/Memory Fallback Mode, storing data locally in `backend/mock_db.json`/`mock_user.json` and running generation tasks synchronously in memory.*
+*Note: If MongoDB or Redis are not detected, the backend will enter Mock Fallback Mode, storing data in `backend/mock_db.json` and running generation tasks synchronously in memory.*
 
-### Frontend Environment Configuration
-Create a `.env` file in the `frontend/` directory (optional, default endpoints are set to localhost):
+### Frontend Configuration
+Create a `.env` file in the `frontend/` directory:
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
-NEXT_PUBLIC_WS_URL=ws://localhost:5000
+NEXT_PUBLIC_API_URL=https://your-backend-service.onrender.com/api
+NEXT_PUBLIC_WS_URL=wss://your-backend-service.onrender.com
 ```
 
 ---
@@ -130,102 +130,50 @@ NEXT_PUBLIC_WS_URL=ws://localhost:5000
 ## How to Run the Project Locally
 
 ### Step 1: Initialize MongoDB and Redis (via Docker)
-To start isolated MongoDB and Redis databases easily, execute the following command in your terminal:
-
+Start isolated database and cache services:
 ```bash
 docker run -d --name veda-mongodb -p 27017:27017 mongo:latest
 docker run -d --name veda-redis -p 6379:6379 redis:latest
 ```
 
-### Step 2: Install Dependencies & Run Backend
+### Step 2: Run Backend
 Open a terminal in the `/backend` directory:
 ```bash
-# Install packages
 npm install
-
-# Start the compilation watcher and server using tsx
 npm run dev
 ```
 *The backend API server will list on `http://localhost:5000`.*
 
-### Step 3: Install Dependencies & Run Frontend
+### Step 3: Run Frontend
 Open a separate terminal in the `/frontend` directory:
 ```bash
-# Install packages
 npm install
-
-# Launch the Next.js development server
 npm run dev
 ```
 *Open your browser and visit `http://localhost:3000`.*
 
 ---
 
-## Verification and Building
+## Production Deployment Guide
 
-To verify code safety and compile output:
+### 1. Databases Setup
+* **MongoDB Atlas (Free Database)**: Create an M0 Free Cluster. Under **Network Access**, add IP `0.0.0.0/0` (Allow Access from Anywhere) to whitelist Render. Write down your connection string and database user password.
+* **Upstash (Free Redis)**: Create a free serverless Redis database and copy the `rediss://...` connection string.
 
-### Backend Build Check
-```bash
-cd backend
-npm run build
-```
+### 2. Backend Deployment (Render)
+Deploy a **Web Service** from your GitHub repository:
+* **Root Directory**: `backend`
+* **Build Command**: `npm install && npm run build`
+* **Start Command**: `node dist/index.js`
+* **Environment Variables**:
+  * `MONGODB_URI`: (Your MongoDB connection string with real password replaced)
+  * `REDIS_URL`: (Your Upstash Redis connection string)
+  * `GEMINI_API_KEY`: (Your Google Gemini API Key)
 
-### Frontend Build Check
-```bash
-cd frontend
-npm run build
-```
-Both projects compile with zero linter or TypeScript errors.
-
----
-
-## 🚀 Walkthrough: Free Production Deployment Guide
-
-Follow these steps to deploy the entire stack for free:
-
-### 1. Database (MongoDB) - MongoDB Atlas Free Tier
-1. Sign up for a free account at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
-2. Create a new project and select the **M0 Free Cluster**.
-3. Choose your cloud provider and region, then click **Create**.
-4. In Security -> Network Access, select **Allow Access From Anywhere** (`0.0.0.0/0`) or configure your backend deployment's IP.
-5. In Security -> Database Access, create a database user and record the username and password.
-6. Retrieve the connection string: select "Connect" -> "Drivers" -> copy the URL (looks like `mongodb+srv://<username>:<password>@cluster0.abcde.mongodb.net/?retryWrites=true&w=majority`).
-
-### 2. Message Broker & Cache (Redis) - Upstash Serverless Redis
-1. Sign up at [Upstash](https://upstash.com/).
-2. Click **Create Database**.
-3. Choose your preferred region, leave other options default, and click **Create**.
-4. Scroll down to the **Node.js** / **iORedis** configuration section and copy the connection string (`rediss://default:...`).
-
-### 3. Backend API & WebSockets - Render.com Free Tier
-Render supports Node.js web services and native WebSockets.
-1. Sign up at [Render](https://render.com/).
-2. Click **New** -> **Web Service**.
-3. Connect your GitHub repository.
-4. Configure the service settings:
-   - **Name**: `vedaai-backend`
-   - **Root Directory**: `backend`
-   - **Language**: `Node`
-   - **Build Command**: `npm install && npm run build`
-   - **Start Command**: `node dist/index.js`
-   - **Instance Type**: **Free**
-5. Add the following **Environment Variables** under the "Advanced" tab:
-   - `PORT`: `10000` (Render will bind to this port automatically)
-   - `MONGODB_URI`: `<Your MongoDB Atlas connection string>`
-   - `REDIS_URL`: `<Your Upstash Redis connection string>`
-   - `GEMINI_API_KEY`: `<Your Google Gemini API Key>`
-6. Click **Create Web Service**. Render will deploy your backend at a URL like `https://vedaai-backend.onrender.com`.
-
-### 4. Frontend Application (Next.js) - Vercel Free Tier
-Vercel is the native hosting platform for Next.js and has a generous free tier.
-1. Sign up at [Vercel](https://vercel.com/) and connect your GitHub account.
-2. Click **Add New** -> **Project**.
-3. Select your repository.
-4. Configure the build parameters:
-   - **Root Directory**: `frontend`
-   - **Framework Preset**: `Next.js`
-5. Add the following **Environment Variables**:
-   - `NEXT_PUBLIC_API_URL`: `https://vedaai-backend.onrender.com/api` (use your Render web service URL with `/api` appended)
-   - `NEXT_PUBLIC_WS_URL`: `wss://vedaai-backend.onrender.com` (use your Render web service URL with `https://` replaced by `wss://`)
-6. Click **Deploy**. Vercel will build and launch your application globally. Your AI Assessment Creator is now live!
+### 3. Frontend Deployment (Vercel)
+Deploy a new project from your GitHub repository:
+* **Root Directory**: `frontend`
+* **Framework Preset**: `Next.js`
+* **Environment Variables**:
+  * `NEXT_PUBLIC_API_URL`: `https://your-backend-service.onrender.com/api` (use your Render web service URL with `/api` appended)
+  * `NEXT_PUBLIC_WS_URL`: `wss://your-backend-service.onrender.com` (use your Render web service URL with `https://` replaced by `wss://`)
