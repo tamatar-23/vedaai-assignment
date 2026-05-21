@@ -26,7 +26,7 @@ export function generateAssignmentPDF(assignment: any): Promise<Buffer> {
       doc.moveDown(0.2);
       doc.fontSize(14).fillColor('#475569').text(`Subject: ${assignment.subject}`, { align: 'center' });
       doc.moveDown(0.1);
-      doc.fontSize(12).text(`Class: ${assignment.classLevel}`, { align: 'center' });
+      doc.fontSize(12).text(`Class: ${assignment.classLevel} | Term Assessment`, { align: 'center' });
       doc.moveDown(0.8);
 
       // Time & Marks Box

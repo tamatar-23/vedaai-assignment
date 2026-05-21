@@ -239,7 +239,7 @@ export default function AssignmentOutput() {
         <div className="exam-paper-header">
           <h1 className="exam-school-title">DEMO PUBLIC SCHOOL</h1>
           <p className="exam-subject-sub">{activeAssignment.subject.toUpperCase()} ASSESSMENT</p>
-          <p className="exam-class-sub">Class: {activeAssignment.classLevel} &bull; Term Assessment</p>
+          <p className="exam-class-sub">Class: {activeAssignment.classLevel} | Term Assessment</p>
         </div>
 
         {/* Exam Metadata (Marks / Time) */}

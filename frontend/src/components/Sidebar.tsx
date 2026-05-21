@@ -86,7 +86,7 @@ export default function Sidebar() {
     { name: 'Home', icon: Home, path: '/', action: null },
     { name: 'My Groups', icon: Users, path: '#', action: (e: any) => handleUnderConstruction(e, 'My Groups') },
     { name: 'Assignments', icon: FileText, path: '/assignments', action: null },
-    { name: 'AI Teacher\'s Toolkit', icon: Sparkles, path: '/create', action: null },
+    { name: 'Create Assignment', icon: Sparkles, path: '/create', action: null },
     { name: 'My Library', icon: Library, path: '#', action: (e: any) => handleUnderConstruction(e, 'My Library') },
   ];
 
@@ -104,11 +104,11 @@ export default function Sidebar() {
           </div>
         </Link>
 
-        {/* Main Action: AI Teacher's Toolkit Button */}
+        {/* Main Action: Create Assignment Button */}
         <div className="sidebar-action">
           <button className="create-btn" onClick={() => router.push('/create')}>
             <Sparkles size={16} className="sparkle-icon" style={{ color: 'var(--primary)' }} />
-            <span className="btn-text">AI Teacher's Toolkit</span>
+            <span className="btn-text">Create Assignment</span>
           </button>
         </div>
 
@@ -122,7 +122,7 @@ export default function Sidebar() {
                 isActive = pathname === '/';
               } else if (item.name === 'Assignments') {
                 isActive = pathname === '/assignments' || pathname.startsWith('/assignment/');
-              } else if (item.name === 'AI Teacher\'s Toolkit') {
+              } else if (item.name === 'Create Assignment') {
                 isActive = pathname === '/create';
               }
 

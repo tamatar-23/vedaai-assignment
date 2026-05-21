@@ -127,12 +127,12 @@ export default function Dashboard() {
         <div className="stat-card dark" style={{ cursor: 'pointer' }} onClick={() => setShowTimeModal(true)} title="View hours breakdown">
           <div>
             <div className="stat-card-title">Time Saved By AI</div>
-            <div className="stat-card-value">31.7 hrs</div>
+            <div className="stat-card-value">12.4 hrs</div>
             <div className="stat-card-subtext">Estimated total saved</div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#22c55e', marginTop: '12px', fontSize: '13px', fontWeight: 700 }}>
             <TrendingUp size={16} />
-            <span>↑ 12% this week</span>
+            <span>↑ 8% this week</span>
           </div>
         </div>
 
@@ -140,11 +140,11 @@ export default function Dashboard() {
         <div className="stat-card light" style={{ cursor: 'pointer' }} onClick={() => setShowGradedModal(true)} title="View graded reports">
           <div>
             <div className="stat-card-title">Total Graded</div>
-            <div className="stat-card-value">128</div>
+            <div className="stat-card-value">38</div>
             <div className="stat-card-subtext">Across all classes</div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', marginTop: '12px', fontSize: '13px', fontWeight: 500 }}>
-            <span>4 different subjects</span>
+            <span>2 different subjects</span>
           </div>
         </div>
 
@@ -191,7 +191,7 @@ export default function Dashboard() {
           </div>
           <h2 className="empty-state-title">No completed assignments yet</h2>
           <p className="empty-state-desc">
-            Use our AI Teacher's Toolkit to generate customizable question papers. 
+            Use our Create Assignment tool to generate customizable question papers. 
             Once completed, they will appear right here.
           </p>
           <button className="empty-state-btn" onClick={handleCreateClick}>
@@ -228,7 +228,7 @@ export default function Dashboard() {
           <div className="grading-banner-icon">🤖</div>
           <div className="grading-banner-text">
             <h3 className="grading-banner-title">Need to generate a new question paper?</h3>
-            <p className="grading-banner-desc">Use our AI Teacher's Toolkit to design customized assessments instantly.</p>
+            <p className="grading-banner-desc">Use Create Assignment to design customized assessments instantly.</p>
           </div>
         </div>
         <button className="grading-banner-btn" onClick={handleCreateClick}>
@@ -275,19 +275,19 @@ export default function Dashboard() {
               <button className="modal-close-btn" onClick={() => setShowTimeModal(false)}>✕</button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '13px', lineHeight: '1.6' }}>
-              <p>By automating question generation, schema design, and answer-key structuring, you saved <strong>31.7 hours</strong> of work this month!</p>
+              <p>By automating question generation, schema design, and answer-key structuring, you saved <strong>12.4 hours</strong> of work this month!</p>
               <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '10px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <span>Prompting & Generation:</span>
-                  <strong>12.5 hrs</strong>
+                  <strong>4.5 hrs</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <span>Answer Key Formulation:</span>
-                  <strong>11.0 hrs</strong>
+                  <strong>4.2 hrs</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <span>Formatting & PDF Rendering:</span>
-                  <strong>8.2 hrs</strong>
+                  <strong>3.7 hrs</strong>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: 'var(--primary-light)', padding: '12px', borderRadius: '8px', border: '1px solid var(--primary)', color: 'var(--primary)', marginTop: '8px' }}>
@@ -311,15 +311,15 @@ export default function Dashboard() {
               <button className="modal-close-btn" onClick={() => setShowGradedModal(false)}>✕</button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '13px', lineHeight: '1.6' }}>
-              <p>You have graded <strong>128 submissions</strong> across 4 subjects since school began.</p>
+              <p>You have graded <strong>38 submissions</strong> across 2 subjects since school began.</p>
               <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '10px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <span>Science (Physics/Chemistry):</span>
-                  <strong>92 submissions</strong>
+                  <strong>22 submissions</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <span>General Knowledge:</span>
-                  <strong>36 submissions</strong>
+                  <strong>16 submissions</strong>
                 </div>
               </div>
               <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '10px' }}>

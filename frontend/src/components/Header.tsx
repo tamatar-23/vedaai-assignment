@@ -254,7 +254,7 @@ export default function Header() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <div style={{ color: 'var(--primary)', fontWeight: 'bold' }}>1.</div>
-                  <div>Click the <strong>AI Teacher's Toolkit</strong> button in the sidebar or banner to open the Creator Form.</div>
+                  <div>Click the <strong>Create Assignment</strong> button in the sidebar or banner to open the Creator Form.</div>
                 </div>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <div style={{ color: 'var(--primary)', fontWeight: 'bold' }}>2.</div>
@@ -273,7 +273,7 @@ export default function Header() {
                   router.push('/create');
                 }}
               >
-                Go to Toolkit
+                Create Assignment
               </button>
             </div>
           </div>

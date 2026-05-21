@@ -139,7 +139,7 @@ export default function AssignmentsPage() {
           <p className="empty-state-desc">
             {searchQuery.trim() 
               ? `We couldn't find any assignments matching "${searchQuery}". Try refining your search query.` 
-              : "Use our AI Teacher's Toolkit to generate customizable question papers. Once completed, they will appear right here."}
+              : "Use our Create Assignment tool to generate customizable question papers. Once completed, they will appear right here."}
           </p>
           {!searchQuery.trim() && (
             <button className="empty-state-btn" onClick={handleCreateClick}>
