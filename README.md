@@ -193,3 +193,17 @@ Deploy a new project from your GitHub repository:
 * **Environment Variables**:
   * `NEXT_PUBLIC_API_URL`: `https://your-backend-service.onrender.com/api` (use your Render web service URL with `/api` appended)
   * `NEXT_PUBLIC_WS_URL`: `wss://your-backend-service.onrender.com` (use your Render web service URL with `https://` replaced by `wss://`)
+
+---
+
+## Troubleshooting
+
+### MongoDB Connection Issues
+If you encounter an issue where:
+> mongodb is not connecting to the backend
+
+This commonly happens due to network firewalls, corporate VPNs, or DNS resolvers blocking SRV lookup records used by MongoDB Atlas (`mongodb+srv://`). To resolve:
+1. Ensure your IP address is whitelisted in your MongoDB Atlas network access control.
+2. Check your local internet connection, DNS configuration, or try using standard replica set connection strings.
+3. Note that if MongoDB is unreachable, the backend will automatically enter **Mock Fallback Mode** storing data in `backend/mock_db.json` so you can continue testing the application.
+

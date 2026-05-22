@@ -79,14 +79,13 @@ export default function AssignmentCard({
                 className="dropdown-item"
                 onClick={() => onView(id)}
               >
-                <Eye size={14} />
                 View Assignment
               </button>
               <button
                 className="dropdown-item delete"
                 onClick={(e) => onDelete(e, id)}
+                style={{ color: '#ef4444' }}
               >
-                <Trash2 size={14} />
                 Delete
               </button>
             </div>

@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import path from 'path';
 import fs from 'fs';
+import dns from 'dns';
 
 export let IS_MOCK_MODE = false;
 
@@ -18,9 +19,37 @@ export async function connectDB(): Promise<void> {
     });
     console.log('MongoDB Connected Successfully.');
     IS_MOCK_MODE = false;
-  } catch (error) {
+  } catch (error: any) {
+    // If connection failed due to DNS SRV/TXT resolution error (ECONNREFUSED / ENOTFOUND),
+    // and we haven't overridden the DNS servers yet, override them to public DNS and retry once.
+    const isDnsError = 
+      error.message?.includes('ECONNREFUSED') || 
+      error.message?.includes('ENOTFOUND') || 
+      error.code === 'ECONNREFUSED' || 
+      error.code === 'ENOTFOUND';
+      
+    if (isDnsError && mongoUri.startsWith('mongodb+srv://')) {
+      const servers = dns.getServers();
+      if (servers.includes('127.0.0.1') || servers.includes('::1')) {
+        console.log('MongoDB connection failed due to DNS lookup. Overriding Node DNS servers to Google & Cloudflare (8.8.8.8, 1.1.1.1) and retrying...');
+        dns.setServers(['8.8.8.8', '1.1.1.1']);
+        try {
+          await mongoose.connect(mongoUri, {
+            serverSelectionTimeoutMS: 3000,
+            connectTimeoutMS: 3000
+          });
+          console.log('MongoDB Connected Successfully after DNS override.');
+          IS_MOCK_MODE = false;
+          return;
+        } catch (retryError) {
+          console.error('MongoDB connection retry failed:', retryError);
+        }
+      }
+    }
+
     console.warn('\n======================================================');
     console.warn('WARNING: MongoDB is not running or unreachable.');
+    console.warn('Error details:', error);
     console.warn('Falling back to local high-fidelity MOCK MODE (mock_db.json).');
     console.warn('No external database setup required!');
     console.warn('======================================================\n');

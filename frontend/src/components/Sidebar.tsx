@@ -12,7 +12,9 @@ import {
   Settings,
   AlertCircle,
   CheckCircle,
-  Shield
+  Shield,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { useUserStore } from '@/store/useUserStore';
 import { useAssignmentStore } from '@/store/useAssignmentStore';
@@ -22,6 +24,30 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  // Load and apply theme on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    if (savedTheme) {
+      setTheme(savedTheme);
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    } else {
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initialTheme = systemDark ? 'dark' : 'light';
+      setTheme(initialTheme);
+      document.documentElement.setAttribute('data-theme', initialTheme);
+    }
+  }, []);
+
+  const toggleTheme = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const nextTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(nextTheme);
+    document.documentElement.setAttribute('data-theme', nextTheme);
+    localStorage.setItem('theme', nextTheme);
+  };
 
   // User Profile Store
   const { user, fetchProfile, updateProfile, mobileSidebarOpen, setMobileSidebarOpen } = useUserStore();
@@ -83,11 +109,12 @@ export default function Sidebar() {
   };
 
   const menuItems = [
-    { name: 'Home', icon: Home, path: '/', action: null },
+    { name: 'Home', icon: Home, path: '/home', action: null },
     { name: 'My Groups', icon: Users, path: '#', action: (e: any) => handleUnderConstruction(e, 'My Groups') },
     { name: 'Assignments', icon: FileText, path: '/assignments', action: null },
-    { name: 'Create Assignment', icon: Sparkles, path: '/create', action: null },
+    { name: 'AI Teacher\'s Toolkit', icon: Sparkles, path: '#', action: (e: any) => handleUnderConstruction(e, 'AI Teacher\'s Toolkit') },
     { name: 'My Library', icon: Library, path: '#', action: (e: any) => handleUnderConstruction(e, 'My Library') },
+    { name: 'Settings', icon: Settings, path: '#', action: (e: any) => { e.preventDefault(); setSettingsOpen(!settingsOpen); } },
   ];
 
   const displaySchoolName = user ? user.schoolName : 'Loading...';
@@ -110,7 +137,7 @@ export default function Sidebar() {
           onClick={() => setMobileSidebarOpen(false)}
         >
           <div className="sidebar-logo" style={{ cursor: 'pointer' }}>
-            <div className="logo-icon">V</div>
+            <img src="/veda-logo.svg" alt="VedaAI Logo" className="logo-icon-svg" />
             <span className="logo-text">VedaAI</span>
           </div>
         </Link>
@@ -136,11 +163,11 @@ export default function Sidebar() {
               // Active states
               let isActive = false;
               if (item.name === 'Home') {
-                isActive = pathname === '/';
+                isActive = pathname === '/home';
               } else if (item.name === 'Assignments') {
                 isActive = pathname === '/assignments' || pathname.startsWith('/assignment/');
-              } else if (item.name === 'Create Assignment') {
-                isActive = pathname === '/create';
+              } else if (item.name === 'Settings') {
+                isActive = settingsOpen;
               }
  
               return (
@@ -159,12 +186,23 @@ export default function Sidebar() {
                     <item.icon size={18} className="nav-icon" />
                     <span className="sidebar-text">{item.name}</span>
                     {item.name === 'Assignments' && (
-                      <span className="badge-count" style={{ backgroundColor: 'var(--primary)', color: '#ffffff' }}>
+                      <span className="badge-count">
                         {assignments.length}
                       </span>
                     )}
- 
                   </Link>
+                  {item.name === 'Settings' && settingsOpen && (
+                    <div className="settings-submenu" style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingLeft: '30px', marginTop: '6px', marginBottom: '6px' }}>
+                      <button 
+                        className="submenu-item" 
+                        onClick={toggleTheme}
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', borderRadius: '8px', fontSize: '13px', color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', width: '100%', textAlign: 'left' }}
+                      >
+                        {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
+                        <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
+                      </button>
+                    </div>
+                  )}
                 </li>
               );
             })}
@@ -172,15 +210,6 @@ export default function Sidebar() {
  
           {/* Settings & Profile Area at Bottom */}
           <div className="sidebar-footer">
-            <Link 
-              href="#" 
-              onClick={(e) => handleUnderConstruction(e, 'Settings')}
-              className="nav-link settings-link"
-            >
-              <Settings size={18} className="nav-icon" />
-              <span className="sidebar-text">Settings</span>
-            </Link>
-            
             <div 
               className="school-card" 
               style={{ cursor: 'pointer', transition: 'all var(--transition-fast)' }}
@@ -190,10 +219,8 @@ export default function Sidebar() {
               }}
               title="Click to edit school details"
             >
-              <div className="school-avatar" style={{ backgroundColor: '#e2fbe8', border: '1px solid #c2f0d0' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                </svg>
+              <div className="school-avatar" style={{ overflow: 'hidden', borderRadius: '50%', backgroundColor: 'transparent', border: '1px solid var(--border-color)', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src="/avatar.png" alt="School Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
               <div className="school-info sidebar-school-info">
                 <h4 className="school-name">{displaySchoolName}</h4>

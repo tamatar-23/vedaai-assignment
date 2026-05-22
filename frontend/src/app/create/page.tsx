@@ -14,7 +14,9 @@ import {
   Plus,
   Trash2,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  UploadCloud,
+  Mic
 } from 'lucide-react';
 import { useAssignmentStore } from '@/store/useAssignmentStore';
 
@@ -52,7 +54,7 @@ export default function CreateAssignment() {
   
   // Question Type Table Rows State
   const [questionTypeRows, setQuestionTypeRows] = useState<QuestionTypeRow[]>([
-    { id: '1', type: 'Short Answer', count: 5, marks: 3 }
+    { id: '1', type: 'Short Questions', count: 5, marks: 3 }
   ]);
 
   // File upload states
@@ -120,7 +122,7 @@ export default function CreateAssignment() {
     const newId = Date.now().toString();
     setQuestionTypeRows([
       ...questionTypeRows,
-      { id: newId, type: 'MCQ', count: 5, marks: 1 }
+      { id: newId, type: 'Multiple Choice Questions', count: 5, marks: 1 }
     ]);
   };
 
@@ -274,342 +276,407 @@ ${additionalInstructions || 'None'}
   ];
 
   return (
-    <div className="form-card card" style={{ maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       
-      {/* Step Progress Tracker */}
-      <div className="step-indicator">
-        <div 
-          className="step-indicator-progress" 
-          style={{ width: step === 1 ? '0%' : '100%' }}
-        ></div>
-        <div className={`step-dot ${step >= 1 ? 'completed' : ''}`}>1</div>
-        <div className={`step-dot ${step === 2 ? 'completed' : 'active'}`}>2</div>
+      {/* Subheader OUTSIDE the main card, left-aligned */}
+      <div className="card" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 24px', marginBottom: '24px', borderRadius: '20px', backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
+        <span className="green-dot" style={{ width: '10px', height: '10px', backgroundColor: '#22c55e', borderRadius: '50%', flexShrink: 0 }}></span>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <h1 style={{ fontSize: '18px', fontWeight: 700, margin: 0, color: 'var(--text-main)' }}>Create Assignment</h1>
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: 0 }}>
+            {step === 1 
+              ? 'Define assignment name, upload reference files, and build the question table.' 
+              : 'Review the metadata and set the duration of the examination paper.'}
+          </p>
+        </div>
       </div>
 
-      <div className="dashboard-title-area" style={{ marginBottom: '24px', textAlign: 'center' }}>
-        <h1 className="dashboard-title">
-          {step === 1 ? 'Assignment Details' : 'Assignment Configuration'}
-        </h1>
-        <p className="dashboard-subtitle">
-          {step === 1 
-            ? 'Define assignment name, upload reference files, and build the question table.' 
-            : 'Review the metadata and set the duration of the examination paper.'}
-        </p>
-      </div>
+      <div className="form-card card">
+        {/* Step Progress Tracker */}
+        <div className="step-indicator">
+          <div 
+            className="step-indicator-progress" 
+            style={{ width: step === 1 ? '0%' : '100%' }}
+          ></div>
+          <div className={`step-dot ${step >= 1 ? 'completed' : ''}`}>1</div>
+          <div className={`step-dot ${step === 2 ? 'completed' : 'active'}`}>2</div>
+        </div>
 
-      <form onSubmit={handleSubmit}>
-        {step === 1 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            
-            {/* Title */}
-            <div className="form-group">
-              <label className="form-label">Assignment Title</label>
-              <input 
-                type="text" 
-                className={`form-input ${errors.title ? 'error' : ''}`}
-                placeholder="e.g. Quiz on Electricity, Chapter 4 Review"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-              {errors.title && <span style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px' }}>{errors.title}</span>}
-            </div>
-
-            {/* Row with Due Date & File Upload label */}
-            <div className="form-grid-2col">
-              {/* Due Date */}
+        <form onSubmit={handleSubmit}>
+          {step === 1 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              
+              {/* Title */}
               <div className="form-group">
-                <label className="form-label">Due Date</label>
+                <label className="form-label">Assignment Title</label>
+                <input 
+                  type="text" 
+                  className={`form-input ${errors.title ? 'error' : ''}`}
+                  placeholder="e.g. Quiz on Electricity, Chapter 4 Review"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+                {errors.title && <span style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px' }}>{errors.title}</span>}
+              </div>
+
+              {/* Row with Due Date & File Upload label */}
+              <div className="form-grid-2col">
+                {/* Due Date */}
+                <div className="form-group">
+                  <label className="form-label">Due Date</label>
+                  <div style={{ position: 'relative' }}>
+                    <input 
+                      type="date" 
+                      className={`form-input ${errors.dueDate ? 'error' : ''}`}
+                      style={{ paddingRight: '40px' }}
+                      value={dueDate}
+                      onChange={(e) => setDueDate(e.target.value)}
+                      onClick={(e) => {
+                        try {
+                          if (typeof e.currentTarget.showPicker === 'function') {
+                            e.currentTarget.showPicker();
+                          }
+                        } catch (err) {
+                          console.error(err);
+                        }
+                      }}
+                    />
+                    <Calendar size={16} style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)', pointerEvents: 'none' }} />
+                    <style>{`
+                      input[type="date"]::-webkit-calendar-picker-indicator {
+                        display: none !important;
+                        -webkit-appearance: none !important;
+                      }
+                    `}</style>
+                  </div>
+                  {errors.dueDate && <span style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px' }}>{errors.dueDate}</span>}
+                </div>
+
+                {/* Empty placeholder to align layout nicely */}
+                <div></div>
+              </div>
+
+              {/* Reference Material File Upload */}
+              <div className="form-group">
+                <label className="form-label">Reference Material (Optional PDF, JPEG, PNG, TXT)</label>
+                <div 
+                  className={`file-upload-area ${dragActive ? 'active' : ''}`}
+                  onDragEnter={handleDrag}
+                  onDragOver={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDrop={handleDrop}
+                  onClick={() => document.getElementById('file-picker')?.click()}
+                  style={{ padding: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  <input 
+                    type="file" 
+                    id="file-picker" 
+                    style={{ display: 'none' }} 
+                    accept=".pdf,.txt,.jpeg,.jpg,.png" 
+                    onChange={handleFileChange}
+                  />
+                  
+                  {uploadedFile ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%', justifyContent: 'center' }}>
+                      <FileUp size={24} style={{ color: 'var(--primary)' }} />
+                      <div style={{ textAlign: 'left' }}>
+                        <div className="file-upload-text">{uploadedFile.name}</div>
+                        <div className="file-upload-subtext">{(uploadedFile.size / 1024).toFixed(1)} KB</div>
+                      </div>
+                      <button 
+                        type="button" 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setUploadedFile(null);
+                        }}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', marginLeft: '12px' }}
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <UploadCloud size={36} style={{ color: 'var(--text-muted)', marginBottom: '8px' }} />
+                      <div className="file-upload-text" style={{ fontWeight: 700, fontSize: '14px', marginBottom: '2px' }}>Choose a file or drag & drop it here</div>
+                      <div className="file-upload-subtext" style={{ color: 'var(--text-muted)', fontSize: '11px', marginBottom: '12px' }}>JPEG, PNG, upto 10MB</div>
+                      <button 
+                        type="button"
+                        className="btn btn-secondary" 
+                        style={{ 
+                          padding: '6px 16px', 
+                          borderRadius: '9999px', 
+                          fontSize: '12px', 
+                          border: '1px solid var(--border-color)', 
+                          backgroundColor: '#f3f4f6', 
+                          color: 'var(--text-main)',
+                          fontWeight: 600,
+                          boxShadow: 'none'
+                        }}
+                      >
+                        Browse Files
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Question Type Table */}
+              <div className="form-group">
+                <label className="form-label">Configure Question Types</label>
+                {errors.questionTypes && (
+                  <div style={{ color: '#ef4444', fontSize: '12px', fontWeight: 600, marginBottom: '8px' }}>
+                    ⚠️ {errors.questionTypes}
+                  </div>
+                )}
+                <table className="question-type-table">
+                  <thead>
+                    <tr>
+                      <th>Question Type</th>
+                      <th style={{ width: '40px' }}></th>
+                      <th>No. of Questions</th>
+                      <th>Marks per Question</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {questionTypeRows.map((row) => (
+                      <tr key={row.id} className="question-type-row">
+                        <td>
+                          <select 
+                            className="question-type-select"
+                            value={row.type}
+                            onChange={(e) => handleRowChange(row.id, 'type', e.target.value)}
+                          >
+                            <option value="Multiple Choice Questions">Multiple Choice Questions</option>
+                            <option value="Short Questions">Short Questions</option>
+                            <option value="Diagram/Graph-Based Questions">Diagram/Graph-Based Questions</option>
+                            <option value="Numerical Problems">Numerical Problems</option>
+                          </select>
+                        </td>
+                        <td>
+                          <button 
+                            type="button" 
+                            className="remove-row-btn"
+                            onClick={() => handleRemoveRow(row.id)}
+                            title="Remove Question Type"
+                          >
+                            <X size={14} />
+                          </button>
+                        </td>
+                        <td>
+                          <div className="stepper-control">
+                            <button 
+                              type="button" 
+                              className="stepper-btn"
+                              onClick={() => adjustCount(row.id, -1)}
+                            >
+                              -
+                            </button>
+                            <input 
+                              type="text" 
+                              className="stepper-input" 
+                              value={row.count} 
+                              readOnly
+                            />
+                            <button 
+                              type="button" 
+                              className="stepper-btn"
+                              onClick={() => adjustCount(row.id, 1)}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="stepper-control">
+                            <button 
+                              type="button" 
+                              className="stepper-btn"
+                              onClick={() => adjustMarks(row.id, -1)}
+                            >
+                              -
+                            </button>
+                            <input 
+                              type="text" 
+                              className="stepper-input" 
+                              value={row.marks} 
+                              readOnly
+                            />
+                            <button 
+                              type="button" 
+                              className="stepper-btn"
+                              onClick={() => adjustMarks(row.id, 1)}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                <button 
+                  type="button" 
+                  className="add-type-btn"
+                  onClick={handleAddRow}
+                >
+                  <span className="plus-circle">
+                    <Plus size={14} />
+                  </span>
+                  Add Question Type
+                </button>
+
+                {/* Running Totals Summary */}
+                <div className="totals-summary">
+                  <span>Total Questions: {totalQuestions}</span>
+                  <span>Total Calculated Marks: {totalMarks}</span>
+                </div>
+              </div>
+
+              {/* Additional instructions */}
+              <div className="form-group">
+                <label className="form-label">Additional Instructions / Topic Focus</label>
+                <div style={{ position: 'relative', width: '100%' }}>
+                  <textarea 
+                    className="form-input"
+                    style={{ 
+                      height: '100px', 
+                      resize: 'vertical',
+                      border: '1px dashed var(--border-color)',
+                      paddingRight: '40px'
+                    }}
+                    placeholder="e.g. Focus on Chapter 4 NCERT chapters. Keep questions conceptual and chemistry-focused."
+                    value={additionalInstructions}
+                    onChange={(e) => setAdditionalInstructions(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    style={{
+                      position: 'absolute',
+                      right: '12px',
+                      bottom: '12px',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      color: 'var(--text-muted)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '4px'
+                    }}
+                    onClick={() => alert("Voice input is a premium feature!")}
+                    title="Speech-to-text instructions"
+                  >
+                    <Mic size={18} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Navigation (Next Only) */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
+                <button 
+                  type="button" 
+                  className="btn-black-pill" 
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                  onClick={handleNextStep}
+                >
+                  Next Step
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+
+            </div>
+          )}
+
+          {step === 2 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              
+              {/* Subject */}
+              <div className="form-group">
+                <label className="form-label">Subject</label>
+                <select 
+                  className="form-input"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                >
+                  {availableSubjects.map((sub) => (
+                    <option key={sub} value={sub}>{sub}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Class Level */}
+              <div className="form-group">
+                <label className="form-label">Grade / Class</label>
+                <input 
+                  type="text" 
+                  className={`form-input ${errors.classLevel ? 'error' : ''}`}
+                  placeholder="e.g. CBSE Grade 8, Class 5th"
+                  value={classLevel}
+                  onChange={(e) => setClassLevel(e.target.value)}
+                />
+                {errors.classLevel && <span style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px' }}>{errors.classLevel}</span>}
+              </div>
+
+              {/* Allowed Time */}
+              <div className="form-group">
+                <label className="form-label">Time Allowed (minutes)</label>
                 <div style={{ position: 'relative' }}>
                   <input 
-                    type="date" 
-                    className={`form-input ${errors.dueDate ? 'error' : ''}`}
-                    value={dueDate}
-                    onChange={(e) => setDueDate(e.target.value)}
+                    type="number" 
+                    className={`form-input ${errors.allowedTime ? 'error' : ''}`}
+                    value={allowedTime}
+                    onChange={(e) => setAllowedTime(Number(e.target.value))}
                   />
-                  <Calendar size={16} style={{ position: 'absolute', right: '16px', top: '14px', color: 'var(--text-light)', pointerEvents: 'none' }} />
+                  <Clock size={16} style={{ position: 'absolute', right: '16px', top: '14px', color: 'var(--text-light)' }} />
                 </div>
-                {errors.dueDate && <span style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px' }}>{errors.dueDate}</span>}
+                {errors.allowedTime && <span style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px' }}>{errors.allowedTime}</span>}
               </div>
 
-              {/* Empty placeholder to align layout nicely */}
-              <div></div>
-            </div>
-
-            {/* Reference Material File Upload */}
-            <div className="form-group">
-              <label className="form-label">Reference Material (Optional PDF, JPEG, PNG, TXT)</label>
-              <div 
-                className={`file-upload-area ${dragActive ? 'active' : ''}`}
-                onDragEnter={handleDrag}
-                onDragOver={handleDrag}
-                onDragLeave={handleDrag}
-                onDrop={handleDrop}
-                onClick={() => document.getElementById('file-picker')?.click()}
-                style={{ padding: '24px' }}
-              >
-                <input 
-                  type="file" 
-                  id="file-picker" 
-                  style={{ display: 'none' }} 
-                  accept=".pdf,.txt,.jpeg,.jpg,.png" 
-                  onChange={handleFileChange}
-                />
-                
-                {uploadedFile ? (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%', justifyContent: 'center' }}>
-                    <FileUp size={24} style={{ color: 'var(--primary)' }} />
-                    <div style={{ textAlign: 'left' }}>
-                      <div className="file-upload-text">{uploadedFile.name}</div>
-                      <div className="file-upload-subtext">{(uploadedFile.size / 1024).toFixed(1)} KB</div>
-                    </div>
-                    <button 
-                      type="button" 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setUploadedFile(null);
-                      }}
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', marginLeft: '12px' }}
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <Upload size={24} className="file-upload-icon" />
-                    <div className="file-upload-text">Drag & drop files or click to upload</div>
-                    <div className="file-upload-subtext">Supports PDF, TXT, JPEG, PNG (Max 10MB)</div>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Question Type Table */}
-            <div className="form-group">
-              <label className="form-label">Configure Question Types</label>
-              {errors.questionTypes && (
-                <div style={{ color: '#ef4444', fontSize: '12px', fontWeight: 600, marginBottom: '8px' }}>
-                  ⚠️ {errors.questionTypes}
+              {/* Max Marks */}
+              <div className="form-group">
+                <label className="form-label">Maximum Marks</label>
+                <div style={{ position: 'relative' }}>
+                  <input 
+                    type="number" 
+                    className={`form-input ${errors.maxMarks ? 'error' : ''}`}
+                    value={maxMarks}
+                    onChange={(e) => setMaxMarks(Number(e.target.value))}
+                  />
+                  <FileText size={16} style={{ position: 'absolute', right: '16px', top: '14px', color: 'var(--text-light)' }} />
                 </div>
-              )}
-              <table className="question-type-table">
-                <thead>
-                  <tr>
-                    <th>Question Type</th>
-                    <th>No. of Questions</th>
-                    <th>Marks per Question</th>
-                    <th style={{ width: '40px' }}></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {questionTypeRows.map((row) => (
-                    <tr key={row.id} className="question-type-row">
-                      <td>
-                        <select 
-                          className="question-type-select"
-                          value={row.type}
-                          onChange={(e) => handleRowChange(row.id, 'type', e.target.value)}
-                        >
-                          <option value="MCQ">MCQ (Multiple Choice)</option>
-                          <option value="Short Answer">Short Answer</option>
-                          <option value="Long Answer">Long Answer</option>
-                          <option value="Very Long Answer">Very Long Answer</option>
-                        </select>
-                      </td>
-                      <td>
-                        <div className="stepper-control">
-                          <button 
-                            type="button" 
-                            className="stepper-btn"
-                            onClick={() => adjustCount(row.id, -1)}
-                          >
-                            -
-                          </button>
-                          <input 
-                            type="text" 
-                            className="stepper-input" 
-                            value={row.count} 
-                            readOnly
-                          />
-                          <button 
-                            type="button" 
-                            className="stepper-btn"
-                            onClick={() => adjustCount(row.id, 1)}
-                          >
-                            +
-                          </button>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="stepper-control">
-                          <button 
-                            type="button" 
-                            className="stepper-btn"
-                            onClick={() => adjustMarks(row.id, -1)}
-                          >
-                            -
-                          </button>
-                          <input 
-                            type="text" 
-                            className="stepper-input" 
-                            value={row.marks} 
-                            readOnly
-                          />
-                          <button 
-                            type="button" 
-                            className="stepper-btn"
-                            onClick={() => adjustMarks(row.id, 1)}
-                          >
-                            +
-                          </button>
-                        </div>
-                      </td>
-                      <td>
-                        <button 
-                          type="button" 
-                          className="remove-row-btn"
-                          onClick={() => handleRemoveRow(row.id)}
-                          title="Remove Question Type"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <button 
-                type="button" 
-                className="add-type-btn"
-                onClick={handleAddRow}
-              >
-                <Plus size={16} />
-                Add Question Type
-              </button>
-
-              {/* Running Totals Summary */}
-              <div className="totals-summary">
-                <span>Total Questions: {totalQuestions}</span>
-                <span>Total Calculated Marks: {totalMarks}</span>
+                {errors.maxMarks && <span style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px' }}>{errors.maxMarks}</span>}
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>
+                  💡 Automatically pre-filled with the calculated total marks: <strong>{totalMarks}</strong>
+                </span>
               </div>
-            </div>
 
-            {/* Additional instructions */}
-            <div className="form-group">
-              <label className="form-label">Additional Instructions / Topic Focus</label>
-              <textarea 
-                className="form-input"
-                style={{ height: '100px', resize: 'vertical' }}
-                placeholder="e.g. Focus on Chapter 4 NCERT chapters. Keep questions conceptual and chemistry-focused."
-                value={additionalInstructions}
-                onChange={(e) => setAdditionalInstructions(e.target.value)}
-              />
-            </div>
+              {/* Navigation (Previous & Generate) */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px' }}>
+                <button 
+                  type="button" 
+                  className="btn-outline-pill" 
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                  onClick={handlePrevStep}
+                >
+                  <ChevronLeft size={16} />
+                  Previous Step
+                </button>
 
-            {/* Navigation (Next Only) */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
-              <button 
-                type="button" 
-                className="btn btn-primary" 
-                style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px' }}
-                onClick={handleNextStep}
-              >
-                Next Step
-                <ChevronRight size={16} />
-              </button>
-            </div>
-
-          </div>
-        )}
-
-        {step === 2 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            
-            {/* Subject */}
-            <div className="form-group">
-              <label className="form-label">Subject</label>
-              <select 
-                className="form-input"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-              >
-                {availableSubjects.map((sub) => (
-                  <option key={sub} value={sub}>{sub}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Class Level */}
-            <div className="form-group">
-              <label className="form-label">Grade / Class</label>
-              <input 
-                type="text" 
-                className={`form-input ${errors.classLevel ? 'error' : ''}`}
-                placeholder="e.g. CBSE Grade 8, Class 5th"
-                value={classLevel}
-                onChange={(e) => setClassLevel(e.target.value)}
-              />
-              {errors.classLevel && <span style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px' }}>{errors.classLevel}</span>}
-            </div>
-
-            {/* Allowed Time */}
-            <div className="form-group">
-              <label className="form-label">Time Allowed (minutes)</label>
-              <div style={{ position: 'relative' }}>
-                <input 
-                  type="number" 
-                  className={`form-input ${errors.allowedTime ? 'error' : ''}`}
-                  value={allowedTime}
-                  onChange={(e) => setAllowedTime(Number(e.target.value))}
-                />
-                <Clock size={16} style={{ position: 'absolute', right: '16px', top: '14px', color: 'var(--text-light)' }} />
+                <button 
+                  type="submit" 
+                  className="btn-black-pill" 
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                  <Sparkles size={16} />
+                  Generate Assignment
+                </button>
               </div>
-              {errors.allowedTime && <span style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px' }}>{errors.allowedTime}</span>}
+
             </div>
-
-            {/* Max Marks */}
-            <div className="form-group">
-              <label className="form-label">Maximum Marks</label>
-              <div style={{ position: 'relative' }}>
-                <input 
-                  type="number" 
-                  className={`form-input ${errors.maxMarks ? 'error' : ''}`}
-                  value={maxMarks}
-                  onChange={(e) => setMaxMarks(Number(e.target.value))}
-                />
-                <FileText size={16} style={{ position: 'absolute', right: '16px', top: '14px', color: 'var(--text-light)' }} />
-              </div>
-              {errors.maxMarks && <span style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px' }}>{errors.maxMarks}</span>}
-              <span style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>
-                💡 Automatically pre-filled with the calculated total marks: <strong>{totalMarks}</strong>
-              </span>
-            </div>
-
-            {/* Navigation (Previous & Generate) */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px' }}>
-              <button 
-                type="button" 
-                className="btn btn-secondary" 
-                style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px' }}
-                onClick={handlePrevStep}
-              >
-                <ChevronLeft size={16} />
-                Previous Step
-              </button>
-
-              <button 
-                type="submit" 
-                className="btn btn-primary" 
-                style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px' }}
-              >
-                <Sparkles size={16} />
-                Generate Assignment
-              </button>
-            </div>
-
-          </div>
-        )}
-      </form>
+          )}
+        </form>
+      </div>
 
       {/* Real-time WebSockets Generation Progress Overlay Sheet */}
       {generating && mounted && createPortal(

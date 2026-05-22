@@ -93,6 +93,15 @@ export async function generateQuestionPaper(params: {
   }
 }
 
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 async function generateMockQuestions(params: {
   subject: string;
   questionTypes: string[];
@@ -121,20 +130,36 @@ async function generateMockQuestions(params: {
   let sectionIndex = 0;
   const sectionLetters = ["A", "B", "C", "D", "E"];
   let totalGeneratedMarks = 0;
+  const usedQuestionTexts = new Set<string>();
   
   for (const qType of typesToGenerate) {
     if (sectionIndex >= sectionLetters.length) break;
     
     await onProgress(`Compiling questions for Section ${sectionLetters[sectionIndex]} (${qType}s)...`, 60 + sectionIndex * 10);
     
-    const filterQs = availableQuestions.filter(q => q.type.toLowerCase() === qType.toLowerCase() || 
-      (qType.toLowerCase().includes('mcq') && q.type === 'MCQ') ||
-      (qType.toLowerCase().includes('short') && q.type === 'Short Answer') ||
-      (qType.toLowerCase().includes('very long') && q.type === 'Very Long Answer') ||
-      (!qType.toLowerCase().includes('very long') && qType.toLowerCase().includes('long') && q.type === 'Long Answer')
-    );
+    const isMatchingType = (q: typeof availableQuestions[0]) => {
+      const lowerType = qType.toLowerCase();
+      const qLowerType = q.type.toLowerCase();
+      return qLowerType === lowerType || 
+        (lowerType.includes('mcq') && q.type === 'MCQ') ||
+        (lowerType.includes('short') && q.type === 'Short Answer') ||
+        (lowerType.includes('very long') && q.type === 'Very Long Answer') ||
+        (!lowerType.includes('very long') && lowerType.includes('long') && q.type === 'Long Answer');
+    };
+
+    // 1. All questions of matching type that are NOT used
+    const matchingUnused = shuffleArray(availableQuestions.filter(q => !usedQuestionTexts.has(q.text) && isMatchingType(q)));
     
-    const pool = filterQs.length > 0 ? filterQs : availableQuestions;
+    // 2. All questions of OTHER types that are NOT used
+    const otherUnused = shuffleArray(availableQuestions.filter(q => !usedQuestionTexts.has(q.text) && !isMatchingType(q)));
+    
+    // 3. All questions of matching type that ARE already used (fallback)
+    const matchingUsed = shuffleArray(availableQuestions.filter(q => usedQuestionTexts.has(q.text) && isMatchingType(q)));
+    
+    // 4. All other questions (fallback)
+    const otherUsed = shuffleArray(availableQuestions.filter(q => usedQuestionTexts.has(q.text) && !isMatchingType(q)));
+
+    const pool = [...matchingUnused, ...otherUnused, ...matchingUsed, ...otherUsed];
     const questions: IQuestion[] = [];
     
     // Assign marks based on type
@@ -155,6 +180,7 @@ async function generateMockQuestions(params: {
         options: pQ.options,
         answer: pQ.answer
       });
+      usedQuestionTexts.add(pQ.text);
       totalGeneratedMarks += defaultMarks;
     }
     
@@ -235,7 +261,8 @@ Ensure:
 2. Group the questions into sections (Section A, Section B, etc.) based on the requested Question Types (e.g. Section A: MCQs, Section B: Short Answers).
 3. Distribute difficulty levels (easy, moderate, hard) evenly across the exam.
 4. Set marks for each question logically so that the sum of marks of all questions matches (or is very close to) the Maximum Marks of ${params.maxMarks}.
-5. Do not include raw HTML print. Do not include markdown code block characters like \`\`\`json, just return the JSON string.
+5. CRITICAL: Every single question must be completely unique. Under no circumstances should the same question, or a minor variation of it, be repeated anywhere in the generated question paper (either within a section or across different sections).
+6. Do not include raw HTML print. Do not include markdown code block characters like \`\`\`json, just return the JSON string.
 `;
 
     await onProgress("Querying Gemini to generate questions...", 60);

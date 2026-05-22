@@ -1,0 +1,5 @@
+**Investigating the Match**
+
+I've hit a snag. The regex inexplicably matched an `<svg ... </svg>` string. My immediate thought is, did the transcript, due to truncation, contain this literal string? I'm checking `transcript.jsonl` now to verify whether truncation caused the rogue match, and if so, where it occurred. I'm also examining the lines to see what is happening.
+
+

@@ -5,17 +5,15 @@ import { useParams, useRouter } from 'next/navigation';
 import { 
   ArrowLeft, 
   Download, 
-  RefreshCw, 
-  Eye, 
-  EyeOff, 
-  Sparkles,
-  Printer,
-  FileText,
-  Clock,
-  Award
+  RefreshCw
 } from 'lucide-react';
-import { useAssignmentStore, IAssignment } from '@/store/useAssignmentStore';
+import { useAssignmentStore } from '@/store/useAssignmentStore';
 import { useUserStore } from '@/store/useUserStore';
+
+const getTitleCase = (str: string) => {
+  if (!str) return '';
+  return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+};
 
 export default function AssignmentOutput() {
   const router = useRouter();
@@ -33,6 +31,7 @@ export default function AssignmentOutput() {
   } = useAssignmentStore();
 
   const { user, fetchProfile } = useUserStore();
+  const firstName = user ? user.name.split(' ')[0] : 'Teacher';
 
   const [showAnswerKey, setShowAnswerKey] = useState(false);
   const logEndRef = useRef<HTMLDivElement | null>(null);
@@ -208,38 +207,61 @@ export default function AssignmentOutput() {
   return (
     <div className="output-layout-wrapper">
       {/* Top Navigation & Action Bar */}
-      <div className="action-bar">
-        <div>
+      <div className="action-bar" style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'flex-start', marginBottom: '32px' }}>
+        <p style={{ color: '#ffffff', fontSize: '18px', fontWeight: 500, lineHeight: 1.5, margin: 0, maxWidth: '750px' }}>
+          Certainly, {firstName}! Here is the customized Question Paper for your CBSE {activeAssignment.classLevel} {activeAssignment.subject} classes:
+        </p>
+        <div style={{ display: 'flex', gap: '12px' }}>
           <button 
+            onClick={handleDownloadPDF}
             style={{ 
-              background: 'none', 
+              backgroundColor: '#ffffff', 
+              color: '#1e293b', 
               border: 'none', 
-              color: '#cbd5e1', 
-              display: 'flex', 
+              borderRadius: '9999px', 
+              padding: '10px 24px', 
+              fontWeight: 600, 
+              display: 'inline-flex', 
               alignItems: 'center', 
-              gap: '6px', 
-              cursor: 'pointer',
-              fontSize: '13px',
-              padding: 0,
-              marginBottom: '4px'
+              gap: '8px', 
+              cursor: 'pointer' 
             }}
-            onClick={handleBack}
           >
-            <ArrowLeft size={14} /> Back to Dashboard
+            <Download size={16} /> Download as PDF
           </button>
-          <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#ffffff' }}>
-            {activeAssignment.title}
-          </h2>
-        </div>
-
-        <div className="action-bar-buttons">
-          <button className="btn btn-secondary" onClick={handleRegenerate} style={{ border: '1px solid #475569', backgroundColor: '#334155', color: '#ffffff' }}>
-            <RefreshCw size={16} />
-            Regenerate AI
+          <button 
+            onClick={handleBack}
+            style={{ 
+              backgroundColor: 'rgba(255,255,255,0.08)', 
+              color: '#ffffff', 
+              border: '1px solid rgba(255,255,255,0.2)', 
+              borderRadius: '9999px', 
+              padding: '10px 24px', 
+              fontWeight: 600, 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: '8px', 
+              cursor: 'pointer' 
+            }}
+          >
+            <ArrowLeft size={16} /> Back
           </button>
-          <button className="btn btn-primary" onClick={handleDownloadPDF}>
-            <Download size={16} />
-            Download PDF
+          <button 
+            onClick={handleRegenerate}
+            style={{ 
+              backgroundColor: 'rgba(255,255,255,0.08)', 
+              color: '#ffffff', 
+              border: '1px solid rgba(255,255,255,0.2)', 
+              borderRadius: '9999px', 
+              padding: '10px 24px', 
+              fontWeight: 600, 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: '8px', 
+              cursor: 'pointer' 
+            }}
+          >
+            <RefreshCw size={16} /> Regenerate AI
           </button>
         </div>
       </div>
@@ -247,22 +269,19 @@ export default function AssignmentOutput() {
       {/* Main Exam Paper Card */}
       <div className="exam-paper-container">
         {/* Header */}
-        <div className="exam-paper-header">
-          <h1 className="exam-school-title">{(activeAssignment?.schoolName || user?.schoolName || 'DELHI PUBLIC SCHOOL').toUpperCase()}</h1>
-          <p className="exam-subject-sub">{activeAssignment.subject.toUpperCase()} ASSESSMENT</p>
-          <p className="exam-class-sub">Class: {activeAssignment.classLevel} | Term Assessment</p>
+        <div className="exam-paper-header" style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <h1 className="exam-school-title" style={{ textAlign: 'center' }}>
+            {getTitleCase([activeAssignment?.schoolName || user?.schoolName || 'DELHI PUBLIC SCHOOL', user?.schoolBranch || 'BOKARO BRANCH'].filter(Boolean).join(', '))}
+          </h1>
+          <p className="exam-subject-sub" style={{ textAlign: 'center', fontSize: '15px', fontWeight: 600, color: '#475569', margin: '4px 0' }}>
+            Subject: {getTitleCase(activeAssignment.subject)}, Class: {activeAssignment.classLevel}
+          </p>
         </div>
 
         {/* Metadata Box */}
         <div className="exam-meta-box">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Clock size={14} />
-            <span>TIME ALLOWED: {activeAssignment.allowedTime} MINUTES</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Award size={14} />
-            <span>MAXIMUM MARKS: {activeAssignment.maxMarks}</span>
-          </div>
+          <span>TIME ALLOWED: {activeAssignment.allowedTime} MINUTES</span>
+          <span>MAXIMUM MARKS: {activeAssignment.maxMarks}</span>
         </div>
 
         {/* Instructions */}
@@ -278,7 +297,7 @@ export default function AssignmentOutput() {
           </ol>
         </div>
 
-        {/* Student Form (with underscores/dashes removed to fix overlap with border-bottom) */}
+        {/* Student Form */}
         <div className="exam-student-form">
           <div className="student-input-group">
             <span>NAME:</span>
@@ -297,28 +316,30 @@ export default function AssignmentOutput() {
         {/* Sections and Questions */}
         {sections.map((section, secIdx) => (
           <div key={secIdx} className="exam-section-block">
-            <h3 className="exam-section-title">{section.title}</h3>
-            <p className="exam-section-instruction">{section.instruction}</p>
+            <h3 className="exam-section-title" style={{ textAlign: 'center' }}>{section.title}</h3>
+            <p className="exam-section-instruction" style={{ textAlign: 'center' }}>{section.instruction}</p>
 
             <div className="exam-questions-list">
               {section.questions.map((q, qIdx) => (
-                <div key={qIdx} className="exam-question-item">
-                  <div className="exam-question-text-row">
-                    <span className="exam-question-num">Q{qIdx + 1}.</span>
+                <div key={qIdx} className="exam-question-item" style={{ marginBottom: '16px' }}>
+                  <div className="exam-question-text-row" style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', fontSize: '14px', lineHeight: '1.6' }}>
+                    <span className="exam-question-num" style={{ fontWeight: 'normal' }}>{qIdx + 1}.</span>
                     <span className="exam-question-text">
+                      <span style={{ fontWeight: 'bold', marginRight: '6px' }}>
+                        [{q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1)}]
+                      </span>
                       {q.questionText}
-                      <span className={`exam-difficulty-tag ${q.difficulty}`}>
-                        {q.difficulty}
+                      <span style={{ fontWeight: 'bold', marginLeft: '6px', whiteSpace: 'nowrap' }}>
+                        [{q.marks} {q.marks === 1 ? 'Mark' : 'Marks'}]
                       </span>
                     </span>
-                    <span className="exam-question-marks">[{q.marks} {q.marks === 1 ? 'Mark' : 'Marks'}]</span>
                   </div>
 
                   {/* MCQ Options if present */}
                   {q.options && q.options.length > 0 && (
-                    <div className="exam-mcq-options">
+                    <div className="exam-mcq-options" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', paddingLeft: '20px', marginTop: '8px' }}>
                       {q.options.map((opt, optIdx) => (
-                        <div key={optIdx} className="exam-mcq-option">
+                        <div key={optIdx} className="exam-mcq-option" style={{ fontSize: '13px' }}>
                           <strong>{String.fromCharCode(65 + optIdx)})</strong> {opt}
                         </div>
                       ))}
@@ -330,44 +351,37 @@ export default function AssignmentOutput() {
           </div>
         ))}
 
-        {/* Toggleable Answer Key Section */}
-        <div className="answer-key-section">
-          <div 
-            className="answer-key-header"
-            onClick={() => setShowAnswerKey(!showAnswerKey)}
-          >
-            <h4 className="answer-key-title">Teacher Answer Key</h4>
-            <div className="answer-key-toggle-indicator">
-              {showAnswerKey ? (
-                <>
-                  <EyeOff size={14} /> Hide Answer Key
-                </>
-              ) : (
-                <>
-                  <Eye size={14} /> Show Answer Key
-                </>
-              )}
-            </div>
-          </div>
-
-          {showAnswerKey && (
-            <div className="answer-key-content">
-              {sections.map((section, secIdx) => (
-                <div key={secIdx} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <h5 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-main)', borderBottom: '1px solid var(--border-color)', paddingBottom: '4px' }}>
-                    {section.title}
-                  </h5>
-                  {section.questions.map((q, qIdx) => (
-                    <div key={qIdx} className="answer-key-item">
-                      <div className="answer-key-q-title">Question {qIdx + 1} Answer:</div>
-                      <div className="answer-key-text">{q.answer}</div>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          )}
+        {/* End of Question Paper Footer */}
+        <div style={{ textAlign: 'center', fontWeight: 'bold', margin: '40px 0', fontSize: '14px', color: '#475569' }}>
+          — End of Question Paper —
         </div>
+
+        {/* Flat Answer Key Section */}
+        <div className="answer-key-section" style={{ marginTop: '40px', borderTop: '2px dashed #cbd5e1', paddingTop: '30px' }}>
+          <h4 className="answer-key-title" style={{ fontSize: '18px', fontWeight: 800, marginBottom: '20px', color: '#0f172a' }}>
+            Answer Key
+          </h4>
+          <div className="answer-key-content" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {sections.map((section, secIdx) => (
+              <div key={secIdx} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <h5 style={{ fontSize: '13px', fontWeight: 700, color: '#475569', borderBottom: '1px solid #e2e8f0', paddingBottom: '4px' }}>
+                  {section.title}
+                </h5>
+                {section.questions.map((q, qIdx) => (
+                  <div key={qIdx} className="answer-key-item" style={{ borderLeft: '3px solid #cbd5e1', paddingLeft: '12px' }}>
+                    <div className="answer-key-q-title" style={{ fontSize: '12px', fontWeight: 700, color: '#475569', marginBottom: '4px' }}>
+                      Question {qIdx + 1} Answer:
+                    </div>
+                    <div className="answer-key-text" style={{ fontSize: '13px', color: '#16a34a', fontWeight: 500 }}>
+                      {q.answer}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
   );

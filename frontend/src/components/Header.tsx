@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { Bell, ArrowLeft, ChevronDown, HelpCircle, User, LogOut, Shield, CheckCircle, Edit3, Sun, Moon, Menu } from 'lucide-react';
+import { Bell, ArrowLeft, ChevronDown, HelpCircle, User, LogOut, Shield, CheckCircle, Edit3, Sun, Moon, Menu, Grid, Sparkles } from 'lucide-react';
 import { useUserStore } from '@/store/useUserStore';
 
 export default function Header() {
@@ -152,43 +152,35 @@ export default function Header() {
           >
             <Menu size={20} />
           </button>
-          {!isHome && (
-            <button className="back-btn" onClick={() => router.push('/')} aria-label="Go Back">
-              <ArrowLeft size={18} />
-            </button>
-          )}
-          <div className="breadcrumb">
-            <span className="breadcrumb-main" style={{ cursor: 'pointer' }} onClick={() => router.push('/')}>Home</span>
-            {!isHome && (
-              <>
-                <span className="breadcrumb-separator">/</span>
-                <span className="breadcrumb-current">{getHeaderTitle()}</span>
-              </>
+          <button className="back-btn" onClick={() => {
+            if (pathname === '/assignments') {
+              router.push('/home');
+            } else {
+              router.push('/assignments');
+            }
+          }} aria-label="Go Back">
+            <ArrowLeft size={18} />
+          </button>
+          <div className="breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {pathname === '/home' ? (
+              <span className="breadcrumb-main" style={{ fontWeight: 600 }}>Home</span>
+            ) : pathname === '/assignments' || pathname === '/create' ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-main)' }}>
+                <Grid size={18} style={{ color: 'var(--text-muted)' }} />
+                <span className="breadcrumb-current" style={{ fontWeight: 600 }}>Assignment</span>
+              </div>
+            ) : pathname.startsWith('/assignment/') ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-main)' }}>
+                <Sparkles size={18} style={{ color: 'var(--text-muted)' }} />
+                <span className="breadcrumb-current" style={{ fontWeight: 600 }}>Create New</span>
+              </div>
+            ) : (
+              <span className="breadcrumb-main" style={{ fontWeight: 600 }}>Home</span>
             )}
           </div>
         </div>
 
         <div className="header-right">
-          {/* Theme Toggle */}
-          <button 
-            className="icon-badge-btn" 
-            aria-label="Toggle Theme" 
-            onClick={toggleTheme}
-            style={{ color: 'var(--text-muted)' }}
-          >
-            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-          </button>
-
-          {/* Help Center Icon Button */}
-          <button 
-            className="icon-badge-btn" 
-            aria-label="Help Center" 
-            onClick={() => setShowHelpModal(true)}
-            style={{ color: 'var(--text-muted)' }}
-          >
-            <HelpCircle size={20} />
-          </button>
-
           {/* Notification Bell Container */}
           <div className="header-dropdown-container">
             <button 
@@ -219,8 +211,8 @@ export default function Header() {
           {/* User Profile Container */}
           <div className="header-dropdown-container">
             <div className="user-profile" onClick={handleProfileClick}>
-              <div className="user-avatar" style={{ backgroundColor: 'var(--primary-light)', color: 'var(--primary)', fontWeight: 'bold' }}>
-                {displayInitials}
+              <div className="user-avatar" style={{ overflow: 'hidden', borderRadius: '50%', backgroundColor: 'transparent', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img src="/avatar.png" alt="User Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
               <span className="user-name">{displayName}</span>
               <ChevronDown size={14} className="chevron-icon" />

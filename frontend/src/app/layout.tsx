@@ -1,14 +1,7 @@
 import type { Metadata } from 'next';
-import { Outfit } from 'next/font/google';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import './globals.css';
-
-const outfit = Outfit({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '800'],
-  variable: '--font-outfit',
-});
 
 export const metadata: Metadata = {
   title: 'VedaAI - AI Assessment Creator',
@@ -21,8 +14,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={outfit.variable}>
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <div className="app-container">
           <Sidebar />
           <div className="main-area">

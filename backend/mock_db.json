@@ -1,232 +1,5 @@
 [
   {
-    "_id": "motion-101",
-    "id": "motion-101",
-    "title": "Assignment on Motion",
-    "subject": "Science",
-    "classLevel": "10-A",
-    "allowedTime": 45,
-    "maxMarks": 50,
-    "dueDate": "2025-05-21T00:00:00.000Z",
-    "createdAt": "2025-05-20T00:00:00.000Z",
-    "status": "completed",
-    "progress": 100,
-    "stepLog": "Completed",
-    "questionTypes": [
-      "MCQ",
-      "Short Answer",
-      "Long Answer"
-    ],
-    "sections": [
-      {
-        "title": "Section A - Multiple Choice Questions",
-        "instruction": "Answer all questions. Each question carries 2 marks.",
-        "questions": [
-          {
-            "questionText": "A body is moving with a constant speed in a circle. It has:",
-            "difficulty": "easy",
-            "marks": 2,
-            "options": [
-              "Constant velocity",
-              "Constant acceleration",
-              "An inward acceleration",
-              "An outward velocity"
-            ],
-            "answer": "An inward acceleration"
-          },
-          {
-            "questionText": "Which of the following is a scalar quantity?",
-            "difficulty": "easy",
-            "marks": 2,
-            "options": [
-              "Velocity",
-              "Displacement",
-              "Acceleration",
-              "Distance"
-            ],
-            "answer": "Distance"
-          },
-          {
-            "questionText": "The slope of a velocity-time graph represents:",
-            "difficulty": "easy",
-            "marks": 2,
-            "options": [
-              "Distance",
-              "Displacement",
-              "Speed",
-              "Acceleration"
-            ],
-            "answer": "Acceleration"
-          },
-          {
-            "questionText": "The area under a velocity-time graph represents:",
-            "difficulty": "moderate",
-            "marks": 2,
-            "options": [
-              "Acceleration",
-              "Force",
-              "Displacement",
-              "Speed"
-            ],
-            "answer": "Displacement"
-          },
-          {
-            "questionText": "A ball is thrown vertically upwards. At the highest point of its trajectory, its velocity is:",
-            "difficulty": "moderate",
-            "marks": 2,
-            "options": [
-              "Maximum",
-              "Zero",
-              "9.8 m/s",
-              "Constant"
-            ],
-            "answer": "Zero"
-          }
-        ]
-      },
-      {
-        "title": "Section B - Short Answer Questions",
-        "instruction": "Answer the following in 30-40 words.",
-        "questions": [
-          {
-            "questionText": "Distinguish between distance and displacement with examples.",
-            "difficulty": "moderate",
-            "marks": 5,
-            "answer": "Distance is the total path length traversed by an object, which is scalar. Displacement is the shortest vector distance between initial and final points."
-          },
-          {
-            "questionText": "State Newton's First Law of Motion and explain inertia.",
-            "difficulty": "moderate",
-            "marks": 5,
-            "answer": "An object remains at rest or in uniform motion unless acted upon by an external net force. Inertia is the resistance of any physical object to any change in its velocity."
-          },
-          {
-            "questionText": "A cyclist rides around a circular track of radius 40m in 80 seconds. Calculate the average velocity.",
-            "difficulty": "hard",
-            "marks": 5,
-            "answer": "In 80 seconds, if the cyclist completes one full lap, the net displacement is zero. Hence, the average velocity is zero."
-          }
-        ]
-      },
-      {
-        "title": "Section C - Long Answer Questions",
-        "instruction": "Answer the following in detail.",
-        "questions": [
-          {
-            "questionText": "Derive the three equations of motion graphically: v = u + at, s = ut + 0.5at², and v² = u² + 2as.",
-            "difficulty": "hard",
-            "marks": 15,
-            "answer": "Provide graphical derivation using velocity-time graph showing area under curve is displacement and slope is acceleration."
-          },
-          {
-            "questionText": "Explain circular motion. Why is uniform circular motion considered an accelerated motion?",
-            "difficulty": "hard",
-            "marks": 10,
-            "answer": "Circular motion is motion along a circular path. Even if speed is constant, direction changes continuously. Change in velocity vector implies acceleration (centripetal acceleration)."
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "_id": "electricity-102",
-    "id": "electricity-102",
-    "title": "Quiz on Electricity",
-    "subject": "Science",
-    "classLevel": "10-A",
-    "allowedTime": 60,
-    "maxMarks": 50,
-    "dueDate": "2025-06-21T00:00:00.000Z",
-    "createdAt": "2025-06-20T00:00:00.000Z",
-    "status": "completed",
-    "progress": 100,
-    "stepLog": "Completed",
-    "questionTypes": [
-      "MCQ",
-      "Short Answer"
-    ],
-    "sections": [
-      {
-        "title": "Section A - MCQs",
-        "instruction": "Select the correct option for each question.",
-        "questions": [
-          {
-            "questionText": "What is the SI unit of electric current?",
-            "difficulty": "easy",
-            "marks": 5,
-            "options": [
-              "Volt",
-              "Ampere",
-              "Ohm",
-              "Joule"
-            ],
-            "answer": "Ampere"
-          },
-          {
-            "questionText": "The electrical resistance of a conductor depends on:",
-            "difficulty": "easy",
-            "marks": 5,
-            "options": [
-              "Its length",
-              "Its area of cross-section",
-              "Nature of material",
-              "All of the above"
-            ],
-            "answer": "All of the above"
-          },
-          {
-            "questionText": "How is an ammeter connected in a circuit to measure current?",
-            "difficulty": "easy",
-            "marks": 5,
-            "options": [
-              "In parallel",
-              "In series",
-              "Either series or parallel",
-              "None of these"
-            ],
-            "answer": "In series"
-          },
-          {
-            "questionText": "Three resistors of 2 ohms, 3 ohms, and 6 ohms are connected in parallel. Their equivalent resistance is:",
-            "difficulty": "moderate",
-            "marks": 5,
-            "options": [
-              "11 ohms",
-              "6 ohms",
-              "1 ohm",
-              "2.5 ohms"
-            ],
-            "answer": "1 ohm"
-          }
-        ]
-      },
-      {
-        "title": "Section B - Short Answer Questions",
-        "instruction": "State the principles clearly.",
-        "questions": [
-          {
-            "questionText": "State Ohm's Law. Draw a circuit diagram to verify it.",
-            "difficulty": "moderate",
-            "marks": 10,
-            "answer": "The current passing through a conductor is directly proportional to the potential difference across its ends, provided temperature remains constant (V = IR)."
-          },
-          {
-            "questionText": "Why are household electrical appliances connected in parallel rather than in series?",
-            "difficulty": "moderate",
-            "marks": 10,
-            "answer": "Parallel connection ensures each appliance gets full voltage, operates independently, and if one device fails, others continue to work."
-          },
-          {
-            "questionText": "An electric iron consumes energy at a rate of 840W when heating is at the maximum. Voltage is 220V. Find current.",
-            "difficulty": "hard",
-            "marks": 10,
-            "answer": "Current I = P/V = 840 / 220 = 3.82 A. Resistance R = V/I = 220 / 3.82 = 57.6 ohms."
-          }
-        ]
-      }
-    ]
-  },
-  {
     "title": "Quiz on Electrolysis and Circuits",
     "subject": "Science",
     "classLevel": "Grade 8",
@@ -247,48 +20,43 @@
     "createdAt": "2026-05-21T12:24:31.005Z"
   },
   {
-    "title": "Quiz on Electrolysis and Circuits",
-    "subject": "Science",
+    "title": "Quiz on CS",
+    "subject": "Computers",
     "classLevel": "Grade 8",
     "allowedTime": 45,
     "maxMarks": 20,
-    "dueDate": "2026-05-22T12:25:29.695Z",
+    "dueDate": "2026-05-23T00:00:00.000Z",
     "questionTypes": [
-      "MCQ",
-      "Short Answer"
+      "Short Questions",
+      "Multiple Choice Questions",
+      "Numerical Problems"
     ],
-    "additionalInstructions": "Focus on NCERT solutions, chapter 4. Chemistry priority.",
+    "additionalInstructions": "[Strict UI Table Configuration - Respect Count & Marks]:\n- Generate exactly 5 Short Questions questions, each valued at 2 marks.\n- Generate exactly 5 Multiple Choice Questions questions, each valued at 1 marks.\n- Generate exactly 1 Numerical Problems questions, each valued at 5 marks.\n\n[Additional Details]:\nComputer Science",
     "status": "completed",
     "progress": 100,
     "stepLog": "Questions generated successfully!",
     "sections": [
       {
         "title": "Section A",
-        "instruction": "Attempt all questions. Select the single best option.",
+        "instruction": "Attempt all questions in this section. Each question carries 2 marks.",
         "questions": [
           {
-            "questionText": "Which of the following is a good conductor of electricity?",
+            "questionText": "Define electroplating and explain its primary purpose.",
             "difficulty": "easy",
-            "marks": 1,
-            "options": [
-              "Distilled Water",
-              "Lemon Juice",
-              "Vegetable Oil",
-              "Honey"
-            ],
-            "answer": "Lemon Juice"
+            "marks": 2,
+            "answer": "Electroplating is the process of coating a metal object with a thin layer of another metal using electrolysis. It is used to prevent corrosion and improve appearance."
           },
           {
-            "questionText": "During electroplating, the object to be coated is connected to which terminal?",
+            "questionText": "What is the role of a conductor in the process of electrolysis?",
             "difficulty": "moderate",
-            "marks": 1,
-            "options": [
-              "Positive Terminal (Anode)",
-              "Negative Terminal (Cathode)",
-              "Any terminal",
-              "Earth terminal"
-            ],
-            "answer": "Negative Terminal (Cathode)"
+            "marks": 2,
+            "answer": "A conductor allows the electric current to flow through the electrolyte, facilitating the movement of ions to electrodes where chemical changes occur."
+          },
+          {
+            "questionText": "Explain why a solution of copper sulfate conducts electricity.",
+            "difficulty": "easy",
+            "marks": 2,
+            "answer": "Copper sulfate dissociates into copper ions (Cu2+) and sulfate ions (SO4 2-) in solution. These free-moving ions carry electric charge."
           }
         ]
       },
@@ -315,127 +83,39 @@
             "answer": "Copper sulfate dissociates into copper ions (Cu2+) and sulfate ions (SO4 2-) in solution. These free-moving ions carry electric charge."
           }
         ]
-      }
-    ],
-    "id": "2wzu8fr",
-    "_id": "2wzu8fr",
-    "createdAt": "2026-05-21T12:55:29.713Z"
-  },
-  {
-    "title": "Quiz on GK",
-    "subject": "General Knowledge",
-    "classLevel": "Grade 8",
-    "allowedTime": 45,
-    "maxMarks": 20,
-    "dueDate": "2026-05-22T00:00:00.000Z",
-    "questionTypes": [
-      "MCQ"
-    ],
-    "status": "completed",
-    "progress": 100,
-    "stepLog": "Questions generated successfully!",
-    "sections": [
-      {
-        "title": "Section A",
-        "instruction": "Attempt all questions. Select the single best option.",
-        "questions": [
-          {
-            "questionText": "Which of the following is a good conductor of electricity?",
-            "difficulty": "easy",
-            "marks": 1,
-            "options": [
-              "Distilled Water",
-              "Lemon Juice",
-              "Vegetable Oil",
-              "Honey"
-            ],
-            "answer": "Lemon Juice"
-          },
-          {
-            "questionText": "During electroplating, the object to be coated is connected to which terminal?",
-            "difficulty": "moderate",
-            "marks": 1,
-            "options": [
-              "Positive Terminal (Anode)",
-              "Negative Terminal (Cathode)",
-              "Any terminal",
-              "Earth terminal"
-            ],
-            "answer": "Negative Terminal (Cathode)"
-          }
-        ]
-      }
-    ],
-    "id": "8dvu9aq",
-    "_id": "8dvu9aq",
-    "createdAt": "2026-05-21T12:53:01.717Z"
-  },
-  {
-    "title": "Quiz on Java Basics",
-    "subject": "Computers",
-    "classLevel": "Grade 9",
-    "allowedTime": 45,
-    "maxMarks": 20,
-    "dueDate": "2026-05-22T00:00:00.000Z",
-    "questionTypes": [
-      "Short Answer",
-      "Long Answer"
-    ],
-    "status": "completed",
-    "progress": 100,
-    "stepLog": "Questions generated successfully!",
-    "sections": [
-      {
-        "title": "Section A: Short Answer Questions",
-        "instruction": "Answer the following questions briefly. Each question carries 2 or 3 marks.",
-        "questions": [
-          {
-            "questionText": "What is Java primarily known for and what does 'WORA' stand for in the context of Java?",
-            "difficulty": "easy",
-            "marks": 2,
-            "answer": "Java is primarily known for its platform independence and object-oriented nature. 'WORA' stands for 'Write Once, Run Anywhere', which describes Java's ability to run compiled code on any platform with a Java Virtual Machine."
-          },
-          {
-            "questionText": "Differentiate between a Java 'source file' and a 'bytecode file' in terms of their extension and purpose.",
-            "difficulty": "moderate",
-            "marks": 3,
-            "answer": "A Java 'source file' has a '.java' extension and contains human-readable code written by a programmer. A 'bytecode file' has a '.class' extension, is generated by the Java compiler (javac) from the source file, and contains machine-independent instructions that are executed by the Java Virtual Machine (JVM)."
-          },
-          {
-            "questionText": "Name any two primitive data types in Java and give an example of a value for each.",
-            "difficulty": "easy",
-            "marks": 2,
-            "answer": "Two primitive data types in Java are:\n1.  `int`: Used for whole numbers. Example: `10`, `-500`.\n2.  `char`: Used for single characters. Example: `'A'`, `'z'`, `'7'`."
-          },
-          {
-            "questionText": "Explain the significance of the `main` method in a Java program. Why is it declared as `public static void`?",
-            "difficulty": "moderate",
-            "marks": 3,
-            "answer": "The `main` method (`public static void main(String[] args)`) is the entry point for any Java application. When a Java program is executed, the JVM looks for and starts execution from this method.\n-   `public`: It's accessible from outside the class, allowing the JVM to invoke it.\n-   `static`: It can be called without creating an object of the class.\n-   `void`: It does not return any value."
-          }
-        ]
       },
       {
-        "title": "Section B: Long Answer Questions",
-        "instruction": "Answer the following questions in detail. Each question carries 5 marks.",
+        "title": "Section C",
+        "instruction": "Attempt all questions in this section. Each question carries 2 marks.",
         "questions": [
           {
-            "questionText": "Write a simple Java program to print the message \"My first Java program!\" to the console. Briefly explain the purpose of each key component used in your program (e.g., `class`, `public static void main`, `System.out.println`).",
-            "difficulty": "moderate",
-            "marks": 5,
-            "answer": "```java\nclass HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"My first Java program!\");\n    }\n}\n```\nExplanation of components:\n-   `class HelloWorld`: Defines a class named `HelloWorld`. In Java, all code resides within classes.\n-   `public static void main(String[] args)`: This is the main method, the entry point of the program execution.\n    -   `public`: Access modifier, making the method visible to the Java Virtual Machine (JVM).\n    -   `static`: Allows the method to be called without creating an object of the class.\n    -   `void`: Indicates that the method does not return any value.\n    -   `String[] args`: An array to hold command-line arguments.\n-   `System.out.println(\"My first Java program!\");`: This statement prints the string \"My first Java program!\" to the console, followed by a new line. `System.out` is an object representing the standard output stream, and `println()` is a method to print text."
+            "questionText": "Define electroplating and explain its primary purpose.",
+            "difficulty": "easy",
+            "marks": 2,
+            "answer": "Electroplating is the process of coating a metal object with a thin layer of another metal using electrolysis. It is used to prevent corrosion and improve appearance."
           },
           {
-            "questionText": "Discuss the roles of the Java Development Kit (JDK) and the Java Virtual Machine (JVM) in the Java ecosystem. How do they work together to allow Java programs to be developed and executed?",
-            "difficulty": "hard",
-            "marks": 5,
-            "answer": "The Java Development Kit (JDK) and Java Virtual Machine (JVM) are crucial for Java programming:\n\n**Java Development Kit (JDK):** This is a software development environment used for developing Java applications. It includes:\n-   **Java Runtime Environment (JRE):** The runtime component (JVM + libraries) needed to run Java applications.\n-   **Development Tools:** Essential tools like:\n    -   `javac`: The Java compiler, which translates Java source code (.java files) into Java bytecode (.class files).\n    -   `java`: The Java application launcher, which starts a JVM to execute compiled bytecode.\n    -   `javadoc`: A documentation generator.\n    -   Debugging and monitoring tools.\n\n**Java Virtual Machine (JVM):** This is an abstract machine that provides a runtime environment in which Java bytecode can be executed. It performs tasks like:\n-   **Loading Code:** Loads `.class` files.\n-   **Verifying Code:** Checks bytecode for security and correctness.\n-   **Executing Code:** Interprets or Just-In-Time (JIT) compiles bytecode into native machine code.\n-   **Runtime Environment:** Manages memory (garbage collection) and provides core libraries.\n\n**How they work together:**\n1.  A developer uses the **JDK**'s `javac` compiler to convert Java source code (`.java` files) into platform-independent Java bytecode (`.class` files).\n2.  To *run* this bytecode, the **JDK**'s `java` launcher invokes a **JVM**.\n3.  The **JVM** (which is part of the JRE, which in turn is part of the JDK) then takes the bytecode and executes it on the specific underlying operating system and hardware. This allows Java to achieve 'Write Once, Run Anywhere' (WORA), as the bytecode is the same across platforms, and the JVM acts as an interpreter/translator for each specific environment."
+            "questionText": "What is the role of a conductor in the process of electrolysis?",
+            "difficulty": "moderate",
+            "marks": 2,
+            "answer": "A conductor allows the electric current to flow through the electrolyte, facilitating the movement of ions to electrodes where chemical changes occur."
+          },
+          {
+            "questionText": "Explain why a solution of copper sulfate conducts electricity.",
+            "difficulty": "easy",
+            "marks": 2,
+            "answer": "Copper sulfate dissociates into copper ions (Cu2+) and sulfate ions (SO4 2-) in solution. These free-moving ions carry electric charge."
           }
         ]
       }
     ],
-    "id": "hx4jo49",
-    "_id": "hx4jo49",
-    "createdAt": "2026-05-21T15:59:35.305Z"
+    "schoolName": "Delhi Public School",
+    "teacherName": "Gourav Mishra",
+    "userId": null,
+    "user": null,
+    "teacher": null,
+    "id": "acvr3iv",
+    "_id": "acvr3iv",
+    "createdAt": "2026-05-22T20:31:11.842Z"
   }
 ]
